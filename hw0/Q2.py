@@ -1,9 +1,8 @@
 from PIL import Image
+import sys
 
-filePath1 = "lena.png"
-filePath2 = "lena_modified.png"
-im = Image.open(filePath1)
-im2 = Image.open(filePath2)
+im = Image.open(sys.argv[1])
+im2 = Image.open(sys.argv[2])
 imSize = im.size
 newImage = Image.new("RGBA", imSize)
 for x in range(0,imSize[0]):
