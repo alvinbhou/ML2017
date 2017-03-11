@@ -66,10 +66,10 @@ def genDayObject():
 	data.append(d)
 	f.close()
 
-def genTrainValSample():
-	with open("training.csv", "w", newline='') as f1:
-		with open("valid.csv", "w", newline='') as f2:
-			with open("all.csv", "w", newline='') as f3:
+def genTrainValSample(num):
+	with open("data/training" + num + ".csv", "w", newline='') as f1:
+		with open("data/valid"+ num + ".csv", "w", newline='') as f2:
+			with open("data/all"+ num +".csv", "w", newline='') as f3:
 				writer = csv.writer(f1)
 				writer2 = csv.writer(f2)
 				writer3 = csv.writer(f3)
@@ -107,11 +107,11 @@ sampleData = []
 trainSet = []
 validSet = []
 
-
+num = input()
 
 genTrainTimezone()
 genDayObject()
-genTrainValSample()
+genTrainValSample(num)
 
 # avgValueList = genTrainValSet()
 # print(avgValueList)
