@@ -57,7 +57,8 @@ def genDayObject():
 		elif(row[1] == "O3"):
 			d.O3 = row[2:]
 		elif(row[1] == "PM10"):
-			d.PM10 = row[2:]
+			results = list(map(float, row[2:]))
+			d.PM10 = results
 		elif(row[1] == "PM2.5"):		
 			results = list(map(float, row[2:]))
 			d.PM25 = results
@@ -67,9 +68,9 @@ def genDayObject():
 	f.close()
 
 def genTrainValSample(num):
-	with open("data/training" + num + ".csv", "w", newline='') as f1:
-		with open("data/valid"+ num + ".csv", "w", newline='') as f2:
-			with open("data/all"+ num +".csv", "w", newline='') as f3:
+	with open("data2/training" + num + ".csv", "w", newline='') as f1:
+		with open("data2/valid"+ num + ".csv", "w", newline='') as f2:
+			with open("data2/all"+ num +".csv", "w", newline='') as f3:
 				writer = csv.writer(f1)
 				writer2 = csv.writer(f2)
 				writer3 = csv.writer(f3)
@@ -77,11 +78,22 @@ def genTrainValSample(num):
 						for ts in timezone[i]:
 							if(-1 in data[i].PM25):
 								continue
-							if(i <= 168):										
+							if(-1 in data[i].PM10):
+								continue							
+							if(i <= 168):	
+								f1.write(str(data[i].id) + ',PM25,')									
 								writer.writerow(data[i].PM25[ts:ts+10])
+								f1.write(str(data[i].id) + ',PM10,')									
+								writer.writerow(data[i].PM10[ts:ts+10])
 							else:
+								f2.write(str(data[i].id) + ',PM25,')
 								writer2.writerow(data[i].PM25[ts:ts+10])
+								f2.write(str(data[i].id) + ',PM10,')
+								writer2.writerow(data[i].PM10[ts:ts+10])
+							f3.write(str(data[i].id) + ',PM25,')
 							writer3.writerow(data[i].PM25[ts:ts+10])
+							f3.write(str(data[i].id) + ',PM10,')
+							writer3.writerow(data[i].PM10[ts:ts+10])
 
 						
 

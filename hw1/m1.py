@@ -1,4 +1,5 @@
 import csv, math
+import time
 
 
 
@@ -94,6 +95,7 @@ w_history = []
 trainSet = []
 validSet = []
 
+start_time = time.time()
 print("Load num of data:")
 num = input()
 print("Load training or load all:")
@@ -102,15 +104,7 @@ initPara = loadData(int(mode), num) # 1 for first time training, 2 for load all
 print("Number of iteration")
 iteration = int(input())
 
-
-
-
-
 gradientDescent(iteration)
-# print(sol[0])
-# print(sol[1])
-# print(sol[2])
-# print('\n')
 
 minError = 9999
 optModel = None
@@ -129,8 +123,9 @@ print("Current MRSE:" + str(MRSE))
 	
 
 with open("model.csv", "a", newline='') as mFile:
-	mFile.write(str(MRSE)+ " " + num)
+	mFile.write(str(MRSE)+ " " + num + " " + mode + " " + str(iteration))
 	mFile.write('\n')
+
 	writer = csv.writer(mFile)
 	writer.writerow([optModel[0]]+optModel[1])
 
@@ -153,6 +148,8 @@ for i in range(1,int(yes)+1):
 	f.close()
 print("avg error:")
 print(accError/(int(yes)))
+
+print("--- %s seconds ---" % (time.time() - start_time))
 
 
 
