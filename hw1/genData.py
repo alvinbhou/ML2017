@@ -9,26 +9,30 @@ class DayData(object):
 
 def genTrainTimezone():
 	LASTHOUR = 14
-	pickNum = 2	
+	# pickNum = 2	
 	count = 0
 	for i in range(0,240):
-		sectionPick = [False] * pickNum
+		# sectionPick = [False] * pickNum
 		pick = 0
 		cpList = []
-		while(pick < pickNum):
-			cp = random.randint(0,LASTHOUR)
-			if(cp <= LASTHOUR/pickNum and sectionPick[0] == False):			
-				cpList.append(cp)
-				sectionPick[0] = True				
-			elif(cp > LASTHOUR/pickNum and sectionPick[1] == False):		
-				cpList.append(cp)
-				sectionPick[1] = True				
-			else:
-				continue
-			pick = pick + 1
-			flag = random.randint(0,1)
-			if(flag == 0):
-				break
+		pickNum = random.randint(1,14)
+		# cpList = random.sample(range(1,14),pickNum)
+		# while(pick < pickNum):
+		# 	cp = random.randint(0,LASTHOUR)
+		# 	if(cp <= LASTHOUR/pickNum and sectionPick[0] == False):			
+		# 		cpList.append(cp)
+		# 		sectionPick[0] = True				
+		# 	elif(cp > LASTHOUR/pickNum and sectionPick[1] == False):		
+		# 		cpList.append(cp)
+		# 		sectionPick[1] = True				
+		# 	else:
+		# 		continue
+		# 	pick = pick + 1
+		# 	flag = random.randint(0,1)
+		# 	if(flag == 0):
+		# 		break
+		cpList = list(range(14))
+		cpList = [x+1 for x in cpList]
 		timezone.append(cpList)
 
 
@@ -68,9 +72,9 @@ def genDayObject():
 	f.close()
 
 def genTrainValSample(num):
-	with open("data2/training" + num + ".csv", "w", newline='') as f1:
-		with open("data2/valid"+ num + ".csv", "w", newline='') as f2:
-			with open("data2/all"+ num +".csv", "w", newline='') as f3:
+	with open("data3/training" + num + ".csv", "w", newline='') as f1:
+		with open("data3/valid"+ num + ".csv", "w", newline='') as f2:
+			with open("data3/all"+ num +".csv", "w", newline='') as f3:
 				writer = csv.writer(f1)
 				writer2 = csv.writer(f2)
 				writer3 = csv.writer(f3)
@@ -78,41 +82,16 @@ def genTrainValSample(num):
 						for ts in timezone[i]:
 							if(-1 in data[i].PM25):
 								continue
-							if(-1 in data[i].PM10):
-								continue							
-							if(i <= 168):	
-								f1.write(str(data[i].id) + ',PM25,')									
+							# if(-1 in data[i].O3):
+							# 	continue							
+							if(i <= 168):																		
 								writer.writerow(data[i].PM25[ts:ts+10])
-								f1.write(str(data[i].id) + ',PM10,')									
-								writer.writerow(data[i].PM10[ts:ts+10])
-							else:
-								f2.write(str(data[i].id) + ',PM25,')
-								writer2.writerow(data[i].PM25[ts:ts+10])
-								f2.write(str(data[i].id) + ',PM10,')
-								writer2.writerow(data[i].PM10[ts:ts+10])
-							f3.write(str(data[i].id) + ',PM25,')
+							else:								
+								writer2.writerow(data[i].PM25[ts:ts+10])							
 							writer3.writerow(data[i].PM25[ts:ts+10])
-							f3.write(str(data[i].id) + ',PM10,')
-							writer3.writerow(data[i].PM10[ts:ts+10])
-
 						
 
-# def genTrainValSet():
-# 	avgValue = [0.0] * 10
-# 	avgY = 0.0
-# 	for i in range(0,len(sampleData)):		
-# 		if(i <= len(sampleData) * 0.75):
-# 			trainSet.append(sampleData[i])
-# 		else:
-# 			validSet.append(sampleData[i])
-# 		avgValue = [x + y for x, y in zip(avgValue, sampleData[i][1])]
-# 		avgY = avgY +  sampleData[i][0]
-# 	avgValue = [x / len(sampleData) for x in avgValue]
-# 	avgY = avgY / len(sampleData)
-# 	return avgValue
-
-
-
+					
 timezone = []
 data = []
 sampleData = []

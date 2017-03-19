@@ -3,18 +3,24 @@ import time
 
 
 
-def loadData(para, num):
+def loadData(varNum, para, num):
 	if(para == 1):
-		f = open('data/training'+ num +'.csv', 'r')
+		f = open('data' + varNum + '/training'+ num +'.csv', 'r')
 	else:
-		f =  open('data/all'+ num +'.csv', 'r')
+		f =  open('data' + varNum + '/all'+ num +'.csv', 'r')
 
-	tmpValue = [0.0] * 10
+	for row in csv.reader(f):
+		rowLen = len(row)
+		break
+	tmpValue = [0.0] * rowLen
 	tmpY = 0.0
+	
 	
 	for row in csv.reader(f):
 		row = list(map(float, row))
-		s = (row[-1],row[0:9] )
+		y_value = row[9]
+		del row[9]
+		s = (y_value, row)
 		
 		tmpValue = [x + y for x, y in zip(tmpValue, s[1])]
 		tmpY = tmpY +  s[0]
@@ -22,13 +28,16 @@ def loadData(para, num):
 
 	tmpValue[:] = [(x / len(trainSet) ) for x in tmpValue]
 	avgY = tmpY / len(trainSet)	
-	avgPara = avgY/sum(tmpValue)	
+	avgPara = avgY/sum(tmpValue)
+
 	f.close()
 
-	f = open('data/valid'+ num +'.csv', 'r')
+	f = open('data' + varNum + '/valid'+ num +'.csv', 'r')
 	for row in csv.reader(f):
+		y_value = row[9]
+		del row[9]
 		row = list(map(float, row))
-		validSet.append((row[-1], row[0:9]))
+		validSet.append((float(y_value), row))
 	f.close()
 
 	return avgPara
@@ -39,13 +48,13 @@ def gradientDescent(iteration):
 	minError = 99999
 	# ydata = b + w * xdata 
 	b = 1 # initial b
-	w = [initPara] * 9  # initial w1 ... w9
+	w = [initPara] * len(trainSet[0][1]) # initial w1 ... w9
 	# w = [0.15463810310296658,-0.22334730272657,0.17318108677263902,-0.04106481017562704,-0.31665746035693665,0.6189104367365011,-0.48575299448433595,-0.21087341712830965,1.261847076351316]
 	lr = 0.1 # learning rate
 	# iteration = 100000
 
 	b_lr = 0.0
-	w_lr = [0.0]* 9
+	w_lr = [0.0] * len(trainSet[0][1])	
 
 	# Store initial values for plotting.
 	b_history.append(b)
@@ -57,7 +66,7 @@ def gradientDescent(iteration):
 	for it in range(iteration):
 	    
 	    b_grad = 0.0
-	    w_grad = [0.0]*9
+	    w_grad = [0.0]* 18
 	    for n in range(len(trainSet)):
 	    	# trainSet[n][0] = y_data
 	    	# trainSet[n][1] = x_data list
@@ -96,11 +105,16 @@ trainSet = []
 validSet = []
 
 start_time = time.time()
+
+print("Include more var?") # 1 for pM25 only, 2 for other
+varNum = input()
+
 print("Load num of data:")
 num = input()
 print("Load training or load all:")
 mode = input()
-initPara = loadData(int(mode), num) # 1 for first time training, 2 for load all
+initPara = loadData(varNum, int(mode), num) # 1 for first time training, 2 for load all
+print(initPara)
 print("Number of iteration")
 iteration = int(input())
 
@@ -118,17 +132,12 @@ for i in range(iteration):
 MRSE = minError
 
 print("Current MRSE:" + str(MRSE))
-
-
 	
 
-with open("model.csv", "a", newline='') as mFile:
-	mFile.write(str(MRSE)+ " " + num + " " + mode + " " + str(iteration))
-	mFile.write('\n')
 
-	writer = csv.writer(mFile)
-	writer.writerow([optModel[0]]+optModel[1])
 
+print("Check through direct id")
+did = input()
 print("Check through number of data?")
 yes = input()
 
@@ -136,10 +145,12 @@ accError = 0.0
 
 for i in range(1,int(yes)+1):	
 	vset = []
-	f = open('data/valid'+ str(i) +'.csv', 'r')	
+	f = open('data' + did + '/valid'+ str(i) +'.csv', 'r')	
 	for row in csv.reader(f):
 		row = list(map(float, row))
-		vset.append((row[-1], row[0:9]))
+		y_value = row[9]
+		del row[9]				
+		vset.append((float(y_value), row))
 	err = errorChecking(optModel, vset)
 	print(err)
 	accError = accError + err
@@ -148,6 +159,19 @@ for i in range(1,int(yes)+1):
 	f.close()
 print("avg error:")
 print(accError/(int(yes)))
+
+with open("model.csv", "a", newline='') as mFile:
+	if(varNum == "1"):
+		s = "PM25"
+	elif(varNum == "2"):
+		s = "MORE"
+	elif(varNum == "3"):
+		s = "BIGDATA25"
+	mFile.write(str(MRSE)+ " " + num + " " + mode + " " + str(iteration) + " " + s)
+	mFile.write('\n')
+
+	writer = csv.writer(mFile)
+	writer.writerow([optModel[0]]+optModel[1])
 
 print("--- %s seconds ---" % (time.time() - start_time))
 
