@@ -41,3 +41,6 @@ for index in dataIndex:
 	f.write(str(index[0]) + ',' + str(index[1]) + '\n')	
 
 
+
+
+
