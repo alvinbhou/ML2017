@@ -47,14 +47,15 @@ def loadData(varNum, para, num):
 def gradientDescent(iteration):	
 	minError = 99999
 	# ydata = b + w * xdata 
-	b = 1 # initial b
+	b = 0 # initial b
 	w = [initPara] * len(trainSet[0][1]) # initial w1 ... w9
+	w2 = [math.sqrt(initPara)] * len(trainSet[0][1]) # initial w10 ... w18
 	# w = [0.15463810310296658,-0.22334730272657,0.17318108677263902,-0.04106481017562704,-0.31665746035693665,0.6189104367365011,-0.48575299448433595,-0.21087341712830965,1.261847076351316]
 	lr = 0.1 # learning rate
 	# iteration = 100000
 
 	b_lr = 0.0
-	w_lr = [0.0] * len(trainSet[0][1])	
+	w_lr = [0.0] * 20	
 
 	# Store initial values for plotting.
 	b_history.append(b)
@@ -72,19 +73,26 @@ def gradientDescent(iteration):
 	    	# trainSet[n][1] = x_data list
 
 	       	b_grad = b_grad  - 2.0*(trainSet[n][0] - b - sum([a*b for a,b in zip(w,trainSet[n][1])]) )*1.0
+	       	squareList = [i ** 2 for i in trainSet[n][1]]
 	       	for i in range(0,9): 
-	        	w_grad[i] = w_grad[i]  - 2.0*(trainSet[n][0] - b - sum([a*b for a,b in zip(w,trainSet[n][1])]))*trainSet[n][1][i]
-	    
+	        	w_grad[i] = w_grad[i]  - 2.0*(trainSet[n][0] - b - sum([a*b for a,b in zip(w,trainSet[n][1])]) - sum([a*b for a,b in zip(w2,squareList)])) * (trainSet[n][1][i])
+	        for i in range(9,18):
+	        	w_grad[i] = w_grad[i]  - 2.0*(trainSet[n][0] - b - sum([a*b for a,b in zip(w,trainSet[n][1])]) - sum([a*b for a,b in zip(w2,squareList)])) * (trainSet[n][1][i-9] ** 2)
+	      	     
 	    b_lr = b_lr + b_grad**2
 	    # Update parameters.
 	    b = b - lr/math.sqrt(b_lr) * b_grad 
 	    for i in range(0,9):
 	   		w_lr[i] = w_lr[i] + w_grad[i]**2
-	   		w[i] = w[i] - lr/math.sqrt(w_lr[i]) * w_grad[i]   		
+	   		w[i] = w[i] - lr/math.sqrt(w_lr[i]) * w_grad[i]
 	    
+	    for i in range(0,9):
+	    	w_lr[i+9] = w_lr[i+9] + w_grad[i+9]**2
+	    	w2[i] = w2[i] - lr/math.sqrt(w_lr[i+9]) * w_grad[i+9]
+
 	    # Store parameters for plotting
 	    b_history.append(b)
-	    w_history.append(w)			
+	    w_history.append(w+w2)
 	# for i in range(iteration):
 	# 	print(w_history[i])
 	# print([b_history[-1]] + w_history[-1])
@@ -93,9 +101,12 @@ def gradientDescent(iteration):
 
 def errorChecking(optModel, validSet):
 	SE = 0
+	w = optModel[1][0:9]
+	w2 = optModel[1][9:18]
 	for vs in validSet:
 		# print(str(vs[0]) + " " + str(( optModel[0] + sum([a*b for a,b in zip(vs[1],optModel[1])]))))
-		SE = SE + (vs[0] - ( optModel[0] + sum([a*b for a,b in zip(vs[1],optModel[1])])) ) ** 2
+		square_vs = [i ** 2 for i in vs[1]]
+		SE = SE + (vs[0] - ( optModel[0] + sum([a*b for a,b in zip(vs[1],w)]) + sum([a*b for a,b in zip(square_vs,w2)]))) ** 2
 	MRSE = 	math.sqrt(SE/len(validSet))
 	return(MRSE)
 
@@ -108,34 +119,31 @@ start_time = time.time()
 
 print("Include more var?") # 1 for pM25 only, 2 for other
 varNum = input()
-# varNum = "3"
 
 print("Load num of data:")
 num = input()
-# num = "13"
 print("Load training or load all:")
 mode = input()
-# mode = "2"
 initPara = loadData(varNum, int(mode), num) # 1 for first time training, 2 for load all
 print(initPara)
 print("Number of iteration")
 iteration = int(input())
-# iteration = 8000
+
 gradientDescent(iteration)
 
 minError = 9999
 optModel = None
-it = 0
 for i in range(iteration):
 	m = (b_history[i],w_history[i])
 	err = errorChecking(m,validSet)
 	if(err < minError):
 		minError = err
 		optModel = m
-		it = i
+
 MRSE = minError
 
-print("Current MRSE:" + str(MRSE) + " " + str(it))
+print("Current MRSE:" + str(MRSE))
+print(optModel)
 	
 
 
@@ -164,7 +172,7 @@ for i in range(1,int(yes)+1):
 print("avg error:")
 print(accError/(int(yes)))
 
-with open("model.csv", "a", newline='') as mFile:
+with open("mode2.csv", "a", newline='') as mFile:
 	if(varNum == "1"):
 		s = "PM25"
 	elif(varNum == "2"):

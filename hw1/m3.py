@@ -61,7 +61,6 @@ def gradientDescent(iteration):
 	w_history.append(w)
 
 	p = None 
-
 	# Iterations
 	for it in range(iteration):
 	    
@@ -73,7 +72,7 @@ def gradientDescent(iteration):
 
 	       	b_grad = b_grad  - 2.0*(trainSet[n][0] - b - sum([a*b for a,b in zip(w,trainSet[n][1])]) )*1.0
 	       	for i in range(0,9): 
-	        	w_grad[i] = w_grad[i]  - 2.0*(trainSet[n][0] - b - sum([a*b for a,b in zip(w,trainSet[n][1])]))*trainSet[n][1][i]
+	        	w_grad[i] = w_grad[i]  - 2.0*(trainSet[n][0] - b - sum([a*b for a,b in zip(w,trainSet[n][1])]))*trainSet[n][1][i] + 2 * lamb * w[i]
 	    
 	    b_lr = b_lr + b_grad**2
 	    # Update parameters.
@@ -105,6 +104,8 @@ trainSet = []
 validSet = []
 
 start_time = time.time()
+
+lamb = 0.5
 
 print("Include more var?") # 1 for pM25 only, 2 for other
 varNum = input()
@@ -164,14 +165,14 @@ for i in range(1,int(yes)+1):
 print("avg error:")
 print(accError/(int(yes)))
 
-with open("model.csv", "a", newline='') as mFile:
+with open("model3.csv", "a", newline='') as mFile:
 	if(varNum == "1"):
 		s = "PM25"
 	elif(varNum == "2"):
 		s = "MORE"
 	elif(varNum == "3"):
 		s = "BIGDATA25"
-	mFile.write(str(MRSE)+ " " + num + " " + mode + " " + str(iteration) + " " + s)
+	mFile.write(str(MRSE)+ " " + num + " " + mode + " " + str(iteration) + " " + s + "lambda " + str(lamb))
 	mFile.write('\n')
 
 	writer = csv.writer(mFile)

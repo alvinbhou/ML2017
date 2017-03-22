@@ -15,8 +15,8 @@ def genTrainTimezone():
 		# sectionPick = [False] * pickNum
 		pick = 0
 		cpList = []
-		pickNum = random.randint(1,14)
-		# cpList = random.sample(range(1,14),pickNum)
+		# pickNum = random.randint(1,13)
+		cpList = random.sample(range(1,14),11)
 		# while(pick < pickNum):
 		# 	cp = random.randint(0,LASTHOUR)
 		# 	if(cp <= LASTHOUR/pickNum and sectionPick[0] == False):			
@@ -31,8 +31,8 @@ def genTrainTimezone():
 		# 	flag = random.randint(0,1)
 		# 	if(flag == 0):
 		# 		break
-		cpList = list(range(14))
-		cpList = [x+1 for x in cpList]
+		# cpList = list(range(14))
+		# cpList = [x+1 for x in cpList]
 		timezone.append(cpList)
 
 
