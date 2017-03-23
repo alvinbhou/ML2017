@@ -151,7 +151,7 @@ MRSE = minError
 '''
 
 # load arguments from model
-m = open('model', 'r')
+m = open('model_best', 'r')
 for row in csv.reader(m):
 	model = row
 # model = [optModel[0]] + optModel[1]
