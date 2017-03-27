@@ -65,19 +65,16 @@ def splitData(data):
 
 	
 def gaussianDistribution(x,mean,sigma):
-	print(x)
-	print(mean)
+	# print(x)
+	# print(mean)
 	pi = math.pi
-
+	
 	para1 = 1 / ((2 * pi) ** (1/2))
 	para2 = 1 / ((np.linalg.det(sigma)) ** (1/2))
-	print(para2)
 	para3 = math.exp((-1/2)*  ( np.dot(np.dot((x - mean),inv(sigma) ),  (x-mean).transpose())))
 	ans = para1*para2*para3
 	# print(ans)
 	return ans
-
-	pass
 
 def maxLikelihood(x_vector, flag):
 	# mean_vector = [0] * len(x_vector[0])
@@ -95,6 +92,7 @@ def maxLikelihood(x_vector, flag):
 	sigma = np.zeros((len(x_vector[0]),len(x_vector[0])))
 	for i in range(length):
 		x = np.array([(x_vector[i] - mean_vector)])
+		print(x)
 		sigma = sigma + np.dot(x.transpose(), x)
 	sigma = sigma/length
 
@@ -129,16 +127,19 @@ data = loadData(data)
 (train_data, valid_data) = splitData(data)
 cData = classification(train_data)
 x_vector = selectAttr(cData)
+print(len(x_vector[0]))
 
-x = [np.array([1,2,3,6]),np.array([5,6,8,8])]
+# for testing
+x = [np.array([1,2,3,6]),np.array([5,6,8,8]),np.array([4,2,1,6])]
 
 
-(mean_vector, sigma, flag) = maxLikelihood(x_vector[0],0)
-print(mean_vector)
-print(sigma)
+(mean_vector, sigma, flag) = maxLikelihood(x,0)
 
+
+# following went wrong
 for i in range(len(x_vector[0])):
 	gaussianDistribution(x_vector[0][i], mean_vector, sigma)
 
 
-# gaussianDistribution(np.array([1,0]),np.array([0.5, 0.1]),np.array([[1,0],[0,1]]))
+# z = gaussianDistribution(np.array([80,70]),np.array([75, 71]),np.array([[874,327],[327,929]]))
+# print(z)
