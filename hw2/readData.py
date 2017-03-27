@@ -3,7 +3,7 @@ from operator import add
 import numpy as np
 from numpy.linalg import inv
 
-class man():
+class Man():
 	def __init__(self):
 		self.age = []
 		self.fnlwgt = []
@@ -29,7 +29,7 @@ def loadData(data):
 			continue
 		row = list(map(int, row))
 		row = np.array(row)
-		m = man()
+		m = Man()
 		m.age = [row[0]]
 		m.fnlwgt = [row[1]]
 		m.sex = [row[2]]
@@ -73,7 +73,7 @@ def gaussianDistribution(x,mean,sigma):
 	para2 = 1 / ((np.linalg.det(sigma)) ** (1/2))
 	para3 = math.exp((-1/2)*  ( np.dot(np.dot((x - mean),inv(sigma) ),  (x-mean).transpose())))
 	ans = para1*para2*para3
-	# print(ans)
+	print(ans)
 	return ans
 
 def maxLikelihood(x_vector, flag):
@@ -83,21 +83,22 @@ def maxLikelihood(x_vector, flag):
 	# 	mean_vector = list(map(add, mean_vector, x_vector[i]))
 	# mean_vector[:] = [(x / len(x_vector) ) for x in mean_vector]
 
+	# compute mean vector
 	length = len(x_vector)
 	mean_vector = np.array([0] * len(x_vector[0]))
 	for i in range(length):
 		mean_vector = mean_vector + x_vector[i]
 	mean_vector = mean_vector / length
 
+	# compute covariance vector
 	sigma = np.zeros((len(x_vector[0]),len(x_vector[0])))
 	for i in range(length):
 		x = np.array([(x_vector[i] - mean_vector)])
-		print(x)
 		sigma = sigma + np.dot(x.transpose(), x)
 	sigma = sigma/length
 
 	
-
+	# flag 0 for class 0, 1 for class 1
 	return ((mean_vector, sigma, flag))
 
 def classification(data):
@@ -110,6 +111,7 @@ def classification(data):
 	return cData
 
 def selectAttr(cData):
+	# select the attr. we want to take into consideration
 	x_vector = [[],[]]
 	for i in range(2):		
 		for j in range(len(cData[i])):
@@ -117,23 +119,25 @@ def selectAttr(cData):
 
 	return x_vector
 
-attr_header = []
+
 data = []
 train_data = []
 valid_data = []
-
-
+# load data
 data = loadData(data)
+# split train/ valid set
 (train_data, valid_data) = splitData(data)
+# classificate train set
 cData = classification(train_data)
+# select the desired attr.
 x_vector = selectAttr(cData)
 print(len(x_vector[0]))
 
 # for testing
 x = [np.array([1,2,3,6]),np.array([5,6,8,8]),np.array([4,2,1,6])]
 
-
-(mean_vector, sigma, flag) = maxLikelihood(x,0)
+# compute opt. mean, cov matrix
+(mean_vector, sigma, flag) = maxLikelihood(x_vector[0],0)
 
 
 # following went wrong
