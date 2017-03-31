@@ -63,11 +63,13 @@ def loadData(data, d, flag):
 # gradient descent 
 def gradientDescent(iteration,x_vector,y_vector, initPara):	
 	minError = 99999
+	# vector length
 	xLen = len(x_vector[0])
+	# training data length
 	dataLen = len(x_vector)
 	b = 0 # initial b
-	w = np.zeros(xLen)
-	lr = 10 # learning rate
+	w = np.zeros(xLen) # w parameters
+	lr = 1 # learning rate
 
 	b_lr = 0.0
 	w_lr = np.zeros(xLen)
@@ -96,6 +98,7 @@ def gradientDescent(iteration,x_vector,y_vector, initPara):
 	    w_history.append(w)		
 	return(b_history[-1], w_history[-1])	
 
+# sigmoid function
 def f_wb(x_n, w, b):
 	z = np.dot(x_n, w) + b
 	ans = 1/(1.0 +np.exp(-1 * z))
@@ -112,7 +115,6 @@ def classification(data):
 
 def selectAttr(cData):
 	# select the attr. we want to take into consideration
-
 	x_vector = []
 	y_vector = []
 	for i in range(len(cData)):		
@@ -123,8 +125,6 @@ def selectAttr(cData):
 		x_vector.append(x)
 		y_vector.append(cData[i].flag)
 	return (x_vector, y_vector)
-
-
 
 def initPara(x_vector):
 	mean_vector = [0] * len(x_vector[0])
@@ -152,9 +152,7 @@ w_history = []
 b_history = []
 
 # load data
-data = loadData(data, 'X_train_norm.csv', 1)
-
-		
+data = loadData(data, 'X_train_norm.csv', 1)		
 
 
 
@@ -162,10 +160,7 @@ data = loadData(data, 'X_train_norm.csv', 1)
 seed = 77777
 ratio = 0.7
 # (train_data, valid_data) = splitData(data, seed, ratio)
-# for i in range(len(data)):
-# 	print(data[i].id)
 
-# (x_vector, y_vector) = selectAttr(data)
 (x_valid_vector, y_valid_vector) = selectAttr(data)
 print(len(x_valid_vector[0]))
 init_vector = [0.0] * len(x_valid_vector[0])
@@ -197,7 +192,6 @@ with open("model.csv", "a", newline='') as mFile:
 	mFile.write(str(p))
 	mFile.write('\n')
 	mFile.write(str(opt_b) + " ;")
-
 	writer = csv.writer(mFile)
 	writer.writerow(opt_model)
 	mFile.write('\n')
