@@ -73,7 +73,7 @@ def selectAttr(cData):
 	y_vector = []
 	for i in range(len(cData)):
 		y_vector.append(cData[i].flag)
-		x_vector.append(cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].age + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].sex)				
+		x_vector.append(cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation  + cData[i].age  + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].country + cData[i].race + cData[i].sex)				
 	return (x_vector, y_vector)
 
 test_data = []

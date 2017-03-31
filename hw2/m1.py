@@ -1,6 +1,7 @@
 import csv, random, math
 from operator import add
 import time
+import numpy as np
 
 
 class Man():
@@ -62,42 +63,43 @@ def loadData(data, d, flag):
 # gradient descent 
 def gradientDescent(iteration,x_vector,y_vector, initPara):	
 	minError = 99999
+	xLen = len(x_vector[0])
+	dataLen = len(x_vector)
 	b = 0 # initial b
-	w = [0] * len(x_vector[0])	
-	lr = 1 # learning rate
+	w = np.zeros(xLen)
+	lr = 10 # learning rate
 
 	b_lr = 0.0
-	w_lr = [0.0] * len(x_vector[0])	
+	w_lr = np.zeros(xLen)
 
 	# Store initial values for plotting.
 	b_history.append(b)
 	w_history.append(w)
-
 	# Iterations
-	for it in range(iteration):
-	    
+	for it in range(iteration):	    
 	    b_grad = 0.0
-	    w_grad = [0.0] * len(x_vector[0])
-	    for n in range(len(x_vector)):
+	    w_grad = np.zeros(xLen)
+	    for n in range(dataLen):
 	       	f_wbComponent = f_wb(x_vector[n], w, b)
 	       	b_grad = b_grad - (y_vector[n] - f_wbComponent)	       	
-	       	for i in range(0,len(x_vector[0])): 
-	        	w_grad[i] = w_grad[i]  - (y_vector[n] - f_wbComponent)* x_vector[n][i]
-
-	    # for i in range(0, len(x_vector[0])):
-	    # 	print(w_grad[i])
+	       	for i in range(0,xLen): 
+	        	w_grad[i] = w_grad[i]  - (y_vector[n] - f_wbComponent)* x_vector[n][i]	 
 	    
 	    b_lr = b_lr + b_grad**2
 	    # Update parameters.
 	    b = b - lr/math.sqrt(b_lr) * b_grad 
-	    for i in range(0,len(x_vector[0])):
-	   		w_lr[i] = w_lr[i] + w_grad[i]**2 + 0.0001
+	    for i in range(0,xLen):
+	   		w_lr[i] = w_lr[i] + w_grad[i]**2 + 0.00000001
 	   		w[i] = w[i] - lr/math.sqrt(w_lr[i]) * w_grad[i]
 	    # Store parameters 
 	    b_history.append(b)
 	    w_history.append(w)		
-
 	return(b_history[-1], w_history[-1])	
+
+def f_wb(x_n, w, b):
+	z = np.dot(x_n, w) + b
+	ans = 1/(1.0 +np.exp(-1 * z))
+	return np.clip(ans, 0.000000000001, 0.9999999999999)
 
 def classification(data):
 	cData = [[],[]]
@@ -111,18 +113,18 @@ def classification(data):
 def selectAttr(cData):
 	# select the attr. we want to take into consideration
 
-
 	x_vector = []
 	y_vector = []
-	for i in range(len(cData)):
+	for i in range(len(cData)):		
+		x = cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation  + cData[i].age  + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].country + cData[i].race + cData[i].sex + cData[i].fnlwgt
+		y = cData[i].flag
+		x = np.array(x)
+		y = np.array(y)
+		x_vector.append(x)
 		y_vector.append(cData[i].flag)
-		x_vector.append(cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].age + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].sex)	
 	return (x_vector, y_vector)
 
-def f_wb(x_n, w, b):
-	z = sum([a*b for a,b in zip(w,x_n)]) + b
-	ans = 1/(1+math.exp(-1 * z))
-	return ans
+
 
 def initPara(x_vector):
 	mean_vector = [0] * len(x_vector[0])
@@ -157,7 +159,7 @@ data = loadData(data, 'X_train_norm.csv', 1)
 
 
 # split train/ valid set
-seed = 913
+seed = 77777
 ratio = 0.7
 # (train_data, valid_data) = splitData(data, seed, ratio)
 # for i in range(len(data)):
@@ -189,7 +191,7 @@ print(p)
 
 
 
-sAttr = "cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].age + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].sex"
+sAttr = "cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation  + cData[i].age  + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].country + cData[i].race + cData[i].sex + cData[i].fnlwgt"
 with open("model.csv", "a", newline='') as mFile:
 	mFile.write(sAttr + " ")
 	mFile.write(str(p))
