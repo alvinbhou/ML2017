@@ -81,21 +81,22 @@ def gradientDescent(iteration,x_vector,y_vector, initPara):
 	for it in range(iteration):	    
 	    b_grad = 0.0
 	    w_grad = np.zeros(xLen)
+	    # print("%s  gradient--- %s seconds ---" % (it, (time.time() - start_time)))
 	    for n in range(dataLen):
 	       	f_wbComponent = f_wb(x_vector[n], w, b)
-	       	b_grad = b_grad - (y_vector[n] - f_wbComponent)	       	
+	       	b_grad = b_grad - (y_vector[n] - f_wbComponent)
+	       	
 	       	for i in range(0,xLen): 
-	        	w_grad[i] = w_grad[i]  - (y_vector[n] - f_wbComponent)* x_vector[n][i]	 
-	    
+	        	w_grad[i] = w_grad[i]  - (y_vector[n] - f_wbComponent)* x_vector[n][i]
 	    b_lr = b_lr + b_grad**2
-	    # Update parameters.
-	    b = b - lr/math.sqrt(b_lr) * b_grad 
-	    for i in range(0,xLen):
-	   		w_lr[i] = w_lr[i] + w_grad[i]**2 + 0.00000001
-	   		w[i] = w[i] - lr/math.sqrt(w_lr[i]) * w_grad[i]
+	    # Update parameters 
+	    b = b - np.multiply(lr/np.sqrt(b_lr),b_grad)
+	    w_lr = w_lr + np.square(w_grad) + 0.000000001
+	    w = w - np.multiply(lr/ np.sqrt(w_lr),w_grad)
 	    # Store parameters 
 	    b_history.append(b)
-	    w_history.append(w)		
+	    w_history.append(w)
+	    print("--- %s seconds ---" % (time.time() - start_time))
 	return(b_history[-1], w_history[-1])	
 
 # sigmoid function
@@ -118,7 +119,7 @@ def selectAttr(cData):
 	x_vector = []
 	y_vector = []
 	for i in range(len(cData)):		
-		x = cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation  + cData[i].age  + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].country + cData[i].race + cData[i].sex + cData[i].fnlwgt
+		x = cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation + cData[i].age + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].country + cData[i].race + cData[i].sex
 		y = cData[i].flag
 		x = np.array(x)
 		y = np.array(y)
@@ -165,6 +166,7 @@ ratio = 0.7
 print(len(x_valid_vector[0]))
 init_vector = [0.0] * len(x_valid_vector[0])
 
+print("Start gradient--- %s seconds ---" % (time.time() - start_time))
 (opt_b , opt_model) = gradientDescent(800,x_valid_vector,y_valid_vector, init_vector)
 print(opt_model)
 print(opt_b)
@@ -186,7 +188,7 @@ print(p)
 
 
 
-sAttr = "cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation  + cData[i].age  + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].country + cData[i].race + cData[i].sex + cData[i].fnlwgt"
+sAttr = "cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation + cData[i].age + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].country + cData[i].race + cData[i].sex"
 with open("model.csv", "a", newline='') as mFile:
 	mFile.write(sAttr + " ")
 	mFile.write(str(p))

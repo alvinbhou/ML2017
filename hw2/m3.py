@@ -63,10 +63,12 @@ def loadData(data, d, flag):
 # gradient descent 
 def gradientDescent(iteration,x_vector,y_vector, initPara):	
 	minError = 99999
+	# vector length
 	xLen = len(x_vector[0])
+	# training data length
 	dataLen = len(x_vector)
 	b = 0 # initial b
-	w = np.zeros(xLen)
+	w = np.zeros(xLen) # w parameters
 	lr = 1 # learning rate
 
 	b_lr = 0.0
@@ -79,26 +81,26 @@ def gradientDescent(iteration,x_vector,y_vector, initPara):
 	for it in range(iteration):	    
 	    b_grad = 0.0
 	    w_grad = np.zeros(xLen)
-	    for n in range(dataLen):
-	       	f_wbComponent = f_wb(x_vector[n], w, b)
-	       	b_grad = b_grad - (y_vector[n] - f_wbComponent)	       	
-	       	for i in range(0,xLen): 
-	        	w_grad[i] = w_grad[i]  - (y_vector[n] - f_wbComponent)* x_vector[n][i]	 
+	    # print("%s  gradient--- %s seconds ---" % (it, (time.time() - start_time)))
 	    
-	    b_lr = b_lr + b_grad**2
-	    # Update parameters.
-	    b = b - lr/math.sqrt(b_lr) * b_grad 
-	    for i in range(0,xLen):
-	   		w_lr[i] = w_lr[i] + w_grad[i]**2 + 0.0000001
-	   		w[i] = w[i] - lr/math.sqrt(w_lr[i]) * w_grad[i]
+
+	    for n in range(dataLen):
+	    	y = f_wb(x_vector[n], w, b)
+	    	b_grad = b_grad - (y_vector[n] - y)
+	    	w_grad = w_grad + (y_vector[n] - y) * x_vector[n]
+	    # Update parameters 
+	    b = b - lr/ (np.multiply(np.sqrt(b_lr) , b_grad) +  0.000000000001)
+	    w_lr = w_lr + np.square(w_grad) + 0.000000000001
+	    w = w - lr/ np.multiply(np.sqrt(w_lr), w_grad)
 	    # Store parameters 
 	    b_history.append(b)
 	    w_history.append(w)		
 	return(b_history[-1], w_history[-1])	
 
+# sigmoid function
 def f_wb(x_n, w, b):
 	z = np.dot(x_n, w) + b
-	ans = 1/(1+np.exp(-1 * z))
+	ans = 1/(1.0 +np.exp(-1 * z))
 	return np.clip(ans, 0.000000000001, 0.9999999999999)
 
 def classification(data):
@@ -112,19 +114,16 @@ def classification(data):
 
 def selectAttr(cData):
 	# select the attr. we want to take into consideration
-
 	x_vector = []
 	y_vector = []
 	for i in range(len(cData)):		
-		x = cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation  + cData[i].age  + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].country + cData[i].race + cData[i].sex + cData[i].fnlwgt
+		x = cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation  + cData[i].age  + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].race + cData[i].sex
 		y = cData[i].flag
 		x = np.array(x)
 		y = np.array(y)
 		x_vector.append(x)
 		y_vector.append(cData[i].flag)
 	return (x_vector, y_vector)
-
-
 
 def initPara(x_vector):
 	mean_vector = [0] * len(x_vector[0])
@@ -152,24 +151,20 @@ w_history = []
 b_history = []
 
 # load data
-data = loadData(data, 'X_train_norm.csv', 1)
-
-		
+data = loadData(data, 'X_train_norm.csv', 1)		
 
 
 
 # split train/ valid set
-seed = 6667
-ratio = 0.2
-(train_data, valid_data) = splitData(data, seed, ratio)
-# for i in range(len(data)):
-# 	print(data[i].id)
+seed = 77777
+ratio = 0.7
+# (train_data, valid_data) = splitData(data, seed, ratio)
 
-# (x_vector, y_vector) = selectAttr(data)
-(x_valid_vector, y_valid_vector) = selectAttr(train_data)
+(x_valid_vector, y_valid_vector) = selectAttr(data)
 print(len(x_valid_vector[0]))
 init_vector = [0.0] * len(x_valid_vector[0])
 
+print("Start gradient--- %s seconds ---" % (time.time() - start_time))
 (opt_b , opt_model) = gradientDescent(800,x_valid_vector,y_valid_vector, init_vector)
 print(opt_model)
 print(opt_b)
@@ -191,13 +186,12 @@ print(p)
 
 
 
-sAttr = "cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation  + cData[i].age  + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].country + cData[i].race + cData[i].sex + cData[i].fnlwgt"
-with open("model2.csv", "a", newline='') as mFile:
-	mFile.write(sAttr + " " + str(seed) +  " " + str(ratio) + " ")
+sAttr = "cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation  + cData[i].age  + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].race + cData[i].sex"
+with open("model.csv", "a", newline='') as mFile:
+	mFile.write(sAttr + " ")
 	mFile.write(str(p))
 	mFile.write('\n')
 	mFile.write(str(opt_b) + " ;")
-
 	writer = csv.writer(mFile)
 	writer.writerow(opt_model)
 	mFile.write('\n')
