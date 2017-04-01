@@ -84,10 +84,11 @@ def gradientDescent(iteration,x_vector,y_vector, initPara):
 	    # print("%s  gradient--- %s seconds ---" % (it, (time.time() - start_time)))
 	    for n in range(dataLen):
 	       	f_wbComponent = f_wb(x_vector[n], w, b)
-	       	b_grad = b_grad - (y_vector[n] - f_wbComponent)
-	       	
-	       	for i in range(0,xLen): 
-	        	w_grad[i] = w_grad[i]  - (y_vector[n] - f_wbComponent)* x_vector[n][i]
+	       	b_grad = b_grad - (y_vector[n] - f_wbComponent)	     
+	       	w_grad = w_grad - (y_vector[n] - f_wbComponent) * x_vector[n]
+
+	       	# for i in range(0,xLen): 
+	        # 	w_grad[i] = w_grad[i]  - (y_vector[n] - f_wbComponent)* x_vector[n][i]
 	    b_lr = b_lr + b_grad**2
 	    # Update parameters 
 	    b = b - np.multiply(lr/np.sqrt(b_lr),b_grad)
@@ -96,7 +97,7 @@ def gradientDescent(iteration,x_vector,y_vector, initPara):
 	    # Store parameters 
 	    b_history.append(b)
 	    w_history.append(w)
-	    print("--- %s seconds ---" % (time.time() - start_time))
+	    # print("--- %s seconds ---" % (time.time() - start_time))
 	return(b_history[-1], w_history[-1])	
 
 # sigmoid function
@@ -167,7 +168,7 @@ print(len(x_valid_vector[0]))
 init_vector = [0.0] * len(x_valid_vector[0])
 
 print("Start gradient--- %s seconds ---" % (time.time() - start_time))
-(opt_b , opt_model) = gradientDescent(800,x_valid_vector,y_valid_vector, init_vector)
+(opt_b , opt_model) = gradientDescent(1600,x_valid_vector,y_valid_vector, init_vector)
 print(opt_model)
 print(opt_b)
 
