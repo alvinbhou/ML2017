@@ -179,49 +179,49 @@ data = loadData(data, 'X_train_norm.csv', 1)
 
 
 
-
+for sd in range(91322, 91355):
 # split train/ valid set
-seed = 91322
-ratio = 0.9
-# (train_data, valid_data) = splitData(data, seed, ratio)
+	seed = sd
+	ratio = 0.9
+	(train_data, valid_data) = splitData(data, seed, ratio)
 
-(x_valid_vector, y_valid_vector) = selectAttr(data)
-print(len(x_valid_vector[0]))
-init_vector = [0.0] * len(x_valid_vector[0])
+	(x_valid_vector, y_valid_vector) = selectAttr(train_data)
+	print(len(x_valid_vector[0]))
+	init_vector = [0.0] * len(x_valid_vector[0])
 
-print("Start gradient--- %s seconds ---" % (time.time() - start_time))
-(opt_b , opt_model) = gradientDescent(800,x_valid_vector,y_valid_vector, init_vector)
-print(opt_model)
-print(opt_b)
-
-
-
-
-# (x_vector, y_vector) = selectAttr(data)
-(x_valid_vector, y_valid_vector) = selectAttr(data)
-
-p = 0
-for i in range(len(x_valid_vector)):
-	if(f_wb(x_valid_vector[i], opt_model, opt_b) >= 0.5):
-		guess = 1
-	else:
-		guess = 0
-	if(guess == y_valid_vector[i]):
-		p = p + 1
-p = p / (len(x_valid_vector))
-print(p)
+	print("Start gradient--- %s seconds ---" % (time.time() - start_time))
+	(opt_b , opt_model) = gradientDescent(800,x_valid_vector,y_valid_vector, init_vector)
+	print(opt_model)
+	print(opt_b)
 
 
 
-sAttr = "cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation + cData[i].age + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].country + cData[i].race + cData[i].sex + cData[i].relation"
-with open("model.csv", "a", newline='') as mFile:
-	mFile.write(sAttr + " " + str(seed) + " " + str(ratio) + " ")
-	mFile.write(str(p))
-	mFile.write('\n')
-	mFile.write(str(opt_b) + " ;")
-	writer = csv.writer(mFile)
-	writer.writerow(opt_model)
-	mFile.write('\n')
+
+	# (x_vector, y_vector) = selectAttr(data)
+	(x_valid_vector, y_valid_vector) = selectAttr(data)
+
+	p = 0
+	for i in range(len(x_valid_vector)):
+		if(f_wb(x_valid_vector[i], opt_model, opt_b) >= 0.5):
+			guess = 1
+		else:
+			guess = 0
+		if(guess == y_valid_vector[i]):
+			p = p + 1
+	p = p / (len(x_valid_vector))
+	print(p)
+
+
+
+	sAttr = "cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation + cData[i].age + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].country + cData[i].race + cData[i].sex + cData[i].relation"
+	with open("model5.csv", "a", newline='') as mFile:
+		mFile.write(sAttr + " " + str(seed) + " " + str(ratio) + " ")
+		mFile.write(str(p))
+		mFile.write('\n')
+		mFile.write(str(opt_b) + " ;")
+		writer = csv.writer(mFile)
+		writer.writerow(opt_model)
+		mFile.write('\n')
 
 # # load test data
 # test_data = []

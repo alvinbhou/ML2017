@@ -118,7 +118,7 @@ def selectAttr(cData):
 		y_vector = []
 		for i in range(len(cData)):
 			y_vector.append(cData[i].flag)
-			x_vector.append(cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation  + cData[i].country + cData[i].capital_gain + cData[i].age +cData[i].hours_per_week)	
+			x_vector.append(cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation  + cData[i].country + cData[i].capital_gain + cData[i].capital_loss +  cData[i].age +cData[i].hours_per_week)	
 	return (x_vector, y_vector)
 
 def f_wb(x_n, w, b):
@@ -190,7 +190,7 @@ print(p)
 
 
 
-sAttr = "cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation  + cData[i].country + cData[i].capital_gain + cData[i].age +cData[i].hours_per_week"
+sAttr = "cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation + cData[i].age + cData[i].capital_gain + cData[i].capital_loss"
 with open("model2.csv", "a", newline='') as mFile:
 	mFile.write(sAttr + " " + str(seed) + " " + str(ratio) + " ")
 	mFile.write(str(p))

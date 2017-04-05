@@ -1,8 +1,10 @@
 import csv, random, math
 from operator import add
 import time
+import numpy as np
 
-model = [-1.70263679169,-1.61653156727,-1.19030263321,-2.25813990584,-1.95049115504,-2.17781907811,-1.89095838624,-0.32957033276,-0.349996922373,0.255085141289,1.27647929533,-0.879405973228,0.603692775108,-9.74161890703,1.09722454908,-0.550980115999,-0.0304951984873,-0.700798326003,-4.42873819162,-0.501079446875,-0.310665601921,-0.970226278978,-0.828714325522,-6.20702979771,-0.970764488172,-1.67445661323,1.19915119033,0.476779768791,-1.65743023123,-2.17884650406,-1.81886625779,-1.70852875295,-0.74485077357,-2.04806373036,-0.728913848665,0.00442601554127,-1.81243639871,-1.48813458088,-1.07245925199,-1.59136364436,-4.41385074721,-0.254176296949,-0.217945852743,-0.512755893327,-0.127863086318,-0.912070815693,-0.986155203531,1.8587363061,2.82757805786,25.9044961188,2.79080428606,0.143887900043,0.556610930413,-0.44999580423,-1.40509904281,-2.9498840132,-0.468413063847,-2.63907993977,-1.24819040204,-1.30973390202,-0.462087879254,-0.127045407397,-0.388548931955,-1.74842792403,-0.992618234502,-1.04877817546,-5.15467352903,-1.78509985825,-0.737977340405,-0.875593145505,-1.15927846715,-0.804936470899,-0.292173869933,0.0204882281724,-0.912080360742,-0.385246288713,-1.23565636604,-1.31736662384,-1.48053232541,-5.83568181025,-1.59438755606,-0.410862058372,-0.824527892388,-0.748770291277,-1.13174504121,-0.525001055849,-1.76039994856,-0.719892924715,-1.25677413092,-1.20937562903,-0.61996143091,-1.89388458146,-0.151782692845,-0.988498961468]
+model = [-1.79693011795,-1.72310070515,-1.24689744928,-2.27875160236,-1.98913677465,-2.36470348609,-2.01234068595,-0.517781574415,-0.458770589379,0.0856955708013,1.09855898357,-1.00797818866,0.480323946023,-9.22989859034,0.933302369623,-0.683829917257,0.133074311911,-0.56994091652,-4.83004623289,-0.379143876688,-0.229334197067,-0.881455188079,-0.692233820103,-5.97752809305,-1.13338112079,-1.25387798809,0.992103208524,0.375686501457,-1.45450915417,-1.69129260061,-1.37400849614,-1.13460011721,-0.56260208689,-1.46152774076,-0.513539943907,0.218186758087,-1.57264702025,-1.26096247718,-0.874590758338,-1.39626344622,-3.52572068821,-0.0763411658,0.0194549376428,-0.283019054065,0.0717575726389,-0.683104206479,-0.493806667916,1.78953044143,2.73870933848,26.8319348545,2.75347715574,-0.00669864157489,-0.559280851659,-1.65735483492,-2.9787563202,-0.6338555881,-2.78281199859,-1.90056646038,-1.5685495114,-0.655244245322,-0.454219947986,-0.523109589412,-1.95595721278,-1.98472310378,-0.792883211503,-4.22458284943,-2.2216857887,-1.0906998803,-0.823812958738,-1.36981571647,-0.926432720925,-0.122187828395,-0.130072448573,-1.14484756995,-0.668343683571,-1.55985119506,-1.48007773594,-1.34827404236,-6.05174188359,-2.56316183281,-0.605939669612,-0.737641246718,-0.797496790863,-1.20404301317,-0.947223941506,-1.89353005968,-1.22577530931,-1.53143055319,-1.37876413908,-0.767895965759,-2.43523353005,0.421840087243,-1.18696288878,-1.09375847711,-0.338706481455,-0.621320833422,-0.701370099881,-0.460606710081,0.835152688484,-0.107249417147,-0.116210147366,-0.720457816839,-1.26447433563,-0.228365819576,1.17447726774]
+
 class Man():
 	def __init__(self):
 		self.age = []
@@ -61,6 +63,46 @@ def loadData(data, d, flag):
 	
 	return data
 
+def clusterData(data):
+	dataLen = len(data)
+	capital_gain_list = [o.capital_gain for o in data]
+	gain_mean = np.mean(capital_gain_list)
+	gain_var = np.var(capital_gain_list)
+	for i in range(dataLen):
+		flag = 0
+		if(capital_gain_list[i][0] <= 0.00000001):
+			flag = 0
+		elif(capital_gain_list[i][0] <= gain_mean + gain_var):
+			flag = 1
+		elif(capital_gain_list[i][0] <= gain_mean + gain_var * 3):
+			flag = 2
+		elif(capital_gain_list[i][0] <= gain_mean + gain_var * 5):
+			flag = 3
+		elif(capital_gain_list[i][0] <= gain_mean + gain_var * 7):
+			flag = 4
+		elif(capital_gain_list[i][0] <= gain_mean + gain_var * 9):
+			flag = 5
+		elif(capital_gain_list[i][0] <= gain_mean + gain_var * 11):
+			flag = 6
+		elif(capital_gain_list[i][0] <= gain_mean + gain_var * 13):
+			flag = 7
+		else:
+			flag = 8
+		cap_g = [0] * 9
+		cap_g[flag] = 1
+		data[i].capital_gain = cap_g
+		# print(data[i].capital_gain)
+
+	capital_loss_list = [o.capital_loss for o in data]
+	loss_mean = np.mean(capital_loss_list)
+	loss_var = np.var(capital_loss_list)
+
+	print(gain_mean)
+	print(gain_var)
+	print(loss_mean)
+	print(loss_var)
+	return data 
+
 def selectAttr(cData):
 	# select the attr. we want to take into consideration
 	# if(len(cData) == 2):
@@ -73,12 +115,15 @@ def selectAttr(cData):
 	y_vector = []
 	for i in range(len(cData)):
 		y_vector.append(cData[i].flag)
-		x_vector.append(cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation + cData[i].age + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].sex + cData[i].country)				
+		x_vector.append(cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation + cData[i].age + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].country + cData[i].race + cData[i].sex + cData[i].relation)				
 	return (x_vector, y_vector)
+
+
 
 test_data = []
 
 test_data = loadData(test_data, 'X_test_norm.csv', 0)
+# test_data = clusterData(test_data)
 print(test_data[0].marryStatus)
 y_pred = [0] * len(test_data)
 (x_test_vector, yxx) = selectAttr(test_data)
@@ -87,12 +132,12 @@ print(len(x_test_vector[0]))
 print(len(model))
 
 for i in range(len(x_test_vector)):
-	if(f_wb(x_test_vector[i], model,-0.6677721321874243) >= 0.5):
+	if(f_wb(x_test_vector[i], model,-0.959546317195) >= 0.5):
 		y_pred[i] = 1
 	else:
 		y_pred[i] = 0
 
-with open("result66.csv", "w", newline='') as mFile:
+with open("result67.csv", "w", newline='') as mFile:
 	writer = csv.writer(mFile)
 	writer.writerow(["id","label"])
 	for i in range(0, len(x_test_vector)):

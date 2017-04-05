@@ -1,8 +1,7 @@
-import csv, random, math
+import csv, random, math, sys
 from operator import add
 import numpy as np
 from numpy.linalg import inv
-import matplotlib.pyplot as plt
 
 
 class Man():
@@ -69,8 +68,6 @@ def splitData(data):
 
 	
 def gaussianDistribution(x,mean,sigma):
-	# print(x)
-	# print(mean)
 	pi = math.pi
 	w = np.array([x - mean])
 	print(w)
@@ -130,9 +127,6 @@ def selectAttr(cData):
 		x_vector = []
 		for i in range(len(cData)):
 				x_vector.append(np.concatenate((cData[i].workClass,cData[i].marryStatus, cData[i].race, cData[i].occupation, cData[i].country, cData[i].eduStatus),0))
-
-
-
 	return x_vector
 
 def bernoulli(x,mean):
@@ -156,17 +150,17 @@ def bernoulli(x,mean):
 	p4 = 0
 	for i in range(21,36):
 		p4 = p4 + x[i] * mean[i]
-	# print(sum(x[21:36]))
+	
 	# country 42 elements
 	p5 = 0
 	for i in range(36,78):
 		p5 = p5 + x[i] * mean[i]
-	# print(sum(x[36:78]))。。
+	
 	p6 = 0 
 	# education status 
 	for i in range(78,94):
 		p6 = p6 + x[i] * mean[i]
-	# print(sum(x[78:93]))。
+	
 	
 	return p1 * p2  * p3 *  p4 * p5 * p6
 
@@ -210,34 +204,34 @@ x_vector_valid = selectAttr(data)
 # # load test data
 test_data = []
 test_data = loadData(test_data, 'X_test.csv', 0)
-# print(len(test_data))
+
 # select the desired attr.
-x_test_vector = selectAttr(data)
+x_test_vector = selectAttr(test_data)
 
 
 y_pred = []
 for i in range(len(x_test_vector)):
-	if(prob(x_test_vector[i], x_main_vector, mean_vector_0, mean_vector_1,0) > 0.5):
+	if(prob(x_test_vector[i], x_main_vector, mean_vector_0, mean_vector_1,0) > 0.45):
 		y_pred.append(0)		
 	else:
 		y_pred.append(1)
 
-# with open("result4.csv", "w", newline='') as mFile:
-# 	writer = csv.writer(mFile)
-# 	writer.writerow(["id","label"])
-# 	for i in range(0, len(x_test_vector)):
-# 		mFile.write(str(i+1) + ",")
-# 		mFile.write(str(y_pred[i]))
-# 		mFile.write("\n")
+with open("resg.csv", "w", newline='') as mFile:
+	writer = csv.writer(mFile)
+	writer.writerow(["id","label"])
+	for i in range(0, len(x_test_vector)):
+		mFile.write(str(i+1) + ",")
+		mFile.write(str(y_pred[i]))
+		mFile.write("\n")
 
 # #test accuracy
-p = 0
-for i in range(len(x_test_vector)):
-	if(y_pred[i] == data[i].flag):
-		p = p + 1
-print(p)
-print(len(x_test_vector))
-print( p / len(x_test_vector))
+# p = 0
+# for i in range(len(x_test_vector)):
+# 	if(y_pred[i] == data[i].flag):
+# 		p = p + 1
+# print(p)
+# print(len(x_test_vector))
+# print( p / len(x_test_vector))
 
 
 
