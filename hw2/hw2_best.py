@@ -132,6 +132,8 @@ def gradientDescent(iteration,x_vector,y_vector, initPara, data):
 	opt_model = None
 	opt_b = None
 
+	lamb = 0.5
+
 	# Store initial values for plotting.
 	b_history.append(b)
 	w_history.append(w)
@@ -143,8 +145,7 @@ def gradientDescent(iteration,x_vector,y_vector, initPara, data):
 	    for n in range(dataLen):
 	       	f_wbComponent = f_wb(x_vector[n], w, b)
 	       	b_grad = b_grad - (y_vector[n] - f_wbComponent)	     
-	       	w_grad = w_grad - (y_vector[n] - f_wbComponent) * x_vector[n]
-
+	       	w_grad = w_grad - (y_vector[n] - f_wbComponent) * x_vector[n]	    
 	       	# for i in range(0,xLen): 
 	        # 	w_grad[i] = w_grad[i]  - (y_vector[n] - f_wbComponent)* x_vector[n][i]
 	    b_lr = b_lr + b_grad**2
@@ -222,7 +223,7 @@ def errorChecking(data, opt_model, opt_b, it):
 		if(guess == y_valid_vector[i]):
 			p = p + 1
 	p = p / (len(x_valid_vector))	
-	# print("Iteration %s , accuracy %s" % (it, p))
+	print("Iteration %s , accuracy %s" % (it, p))
 	return p
 
 
@@ -246,7 +247,7 @@ ratio = 0.9
 
 (x_valid_vector, y_valid_vector) = selectAttr(train_data)
 # print(len(x_valid_vector[0]))
-init_vector = [0.0] * len(x_valid_vector[0])	
+init_vector = np.zeros(len(x_valid_vector[0]))
 	
 
 print("Start gradient--- %s seconds ---" % (time.time() - start_time))
@@ -270,7 +271,7 @@ print(p)
 print("--- %s seconds ---" % (time.time() - start_time))
 
 test_data = []
-test_data = loadData(test_data, 'X_test.csv', 0)
+test_data = loadData(test_data, 'X_train.csv', 0)
 test_data = normalData(test_data)
 y_pred = [0] * len(test_data)
 (x_test_vector, yxx) = selectAttr(test_data)

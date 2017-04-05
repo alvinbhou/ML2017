@@ -203,7 +203,7 @@ x_vector_valid = selectAttr(data)
 
 # # load test data
 test_data = []
-test_data = loadData(test_data, 'X_test.csv', 0)
+test_data = loadData(test_data, 'X_train.csv', 0)
 
 # select the desired attr.
 x_test_vector = selectAttr(test_data)
@@ -225,13 +225,13 @@ with open("resg.csv", "w", newline='') as mFile:
 		mFile.write("\n")
 
 # #test accuracy
-# p = 0
-# for i in range(len(x_test_vector)):
-# 	if(y_pred[i] == data[i].flag):
-# 		p = p + 1
-# print(p)
-# print(len(x_test_vector))
-# print( p / len(x_test_vector))
+p = 0
+for i in range(len(x_test_vector)):
+	if(y_pred[i] == data[i].flag):
+		p = p + 1
+print(p)
+print(len(x_test_vector))
+print( p / len(x_test_vector))
 
 
 
