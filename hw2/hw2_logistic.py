@@ -223,7 +223,7 @@ def errorChecking(data, opt_model, opt_b, it):
 		if(guess == y_valid_vector[i]):
 			p = p + 1
 	p = p / (len(x_valid_vector))	
-	print("Iteration %s , accuracy %s" % (it, p))
+	# print("Iteration %s , accuracy %s" % (it, p))
 	return p
 
 
@@ -260,23 +260,16 @@ init_vector = np.zeros(len(x_valid_vector[0]))
 
 # print("Start gradient--- %s seconds ---" % (time.time() - start_time))
 (opt_b , opt_model, p) = gradientDescent(1000,x_valid_vector,y_valid_vector, init_vector, data)
-print(opt_model)
-print(opt_b)
-print(p)
+# print(opt_model)
+# print(opt_b)
+# print(p)
 
 
 
-# sAttr = "cData[i].eduStatus + cData[i].workClass + cData[i].marryStatus + cData[i].occupation + cData[i].age + cData[i].hours_per_week + cData[i].capital_gain + cData[i].capital_loss + cData[i].country + cData[i].race + cData[i].sex + cData[i].relation"
-# with open("model5.csv", "a", newline='') as mFile:
-# 	mFile.write(sAttr + " " + str(seed) + " " + str(seed2) + " " + str(ratio) + " ")
-# 	mFile.write(str(p))
-# 	mFile.write('\n')
-# 	mFile.write(str(opt_b) + " ;")
-# 	writer = csv.writer(mFile)
-# 	writer.writerow(opt_model)		
+
 		
 	
-# print("--- %s seconds ---" % (time.time() - start_time))
+
 
 test_data = []
 test_data = loadData(test_data, X_testFile, 0)
@@ -297,3 +290,5 @@ with open(predictionFile, "w", newline='') as mFile:
 		mFile.write(str(i+1) + ",")
 		mFile.write(str(y_pred[i]))
 		mFile.write("\n")
+
+# print("--- %s seconds ---" % (time.time() - start_time))
