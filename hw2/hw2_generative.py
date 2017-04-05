@@ -49,7 +49,7 @@ def loadData(data, d, flag):
 	f.close()
 
 	if(flag == 1):
-		f = open('Y_train.csv','r')
+		f = open(Y_trainFile,'r')
 		index = 0
 		for row in csv.reader(f):
 			data[index].flag = int(row[0])
@@ -175,11 +175,20 @@ def prob(x, x_vector, mean0, mean1, feature):
 	return np.clip(P, 0.0000000001, 0.999999999999)
 
 
+rawDataFile = sys.argv[1]
+testDataFile = sys.argv[2]
+X_trainFile = sys.argv[3]
+Y_trainFile = sys.argv[4]
+X_testFile = sys.argv[5]
+predictionFile = sys.argv[6]
+
+
+
 data = []
 train_data = []
 valid_data = []
 # load data
-data = loadData(data, 'X_train.csv', 1)
+data = loadData(data, X_trainFile, 1)
 
 # split train/ valid set
 # (train_data, valid_data) = splitData(data)
@@ -203,7 +212,7 @@ x_vector_valid = selectAttr(data)
 
 # # load test data
 test_data = []
-test_data = loadData(test_data, 'X_train.csv', 0)
+test_data = loadData(test_data, X_testFile, 0)
 
 # select the desired attr.
 x_test_vector = selectAttr(test_data)
@@ -216,7 +225,7 @@ for i in range(len(x_test_vector)):
 	else:
 		y_pred.append(1)
 
-with open("resg.csv", "w", newline='') as mFile:
+with open(predictionFile, "w", newline='') as mFile:
 	writer = csv.writer(mFile)
 	writer.writerow(["id","label"])
 	for i in range(0, len(x_test_vector)):
@@ -225,13 +234,13 @@ with open("resg.csv", "w", newline='') as mFile:
 		mFile.write("\n")
 
 # #test accuracy
-p = 0
-for i in range(len(x_test_vector)):
-	if(y_pred[i] == data[i].flag):
-		p = p + 1
-print(p)
-print(len(x_test_vector))
-print( p / len(x_test_vector))
+# p = 0
+# for i in range(len(x_test_vector)):
+# 	if(y_pred[i] == data[i].flag):
+# 		p = p + 1
+# print(p)
+# print(len(x_test_vector))
+# print( p / len(x_test_vector))
 
 
 

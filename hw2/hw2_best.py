@@ -49,7 +49,7 @@ def loadData(data, d, flag):
 	f.close()
 
 	if(flag == 1):
-		f = open('Y_train.csv','r')
+		f = open(Y_trainFile,'r')
 		index = 0
 		for row in csv.reader(f):
 			data[index].flag = int(row[0])
@@ -227,7 +227,15 @@ def errorChecking(data, opt_model, opt_b, it):
 	return p
 
 
-start_time = time.time()
+rawDataFile = sys.argv[1]
+testDataFile = sys.argv[2]
+X_trainFile = sys.argv[3]
+Y_trainFile = sys.argv[4]
+X_testFile = sys.argv[5]
+predictionFile = sys.argv[6]
+
+
+# start_time = time.time()
 
 data = []
 train_data = []
@@ -236,7 +244,7 @@ w_history = []
 b_history = []
 
 # load data
-data = loadData(data, 'X_train.csv', 1)
+data = loadData(data, X_trainFile, 1)
 data = normalData(data)
 # data = clusterData(data)	
 
@@ -250,7 +258,7 @@ ratio = 0.9
 init_vector = np.zeros(len(x_valid_vector[0]))
 	
 
-print("Start gradient--- %s seconds ---" % (time.time() - start_time))
+# print("Start gradient--- %s seconds ---" % (time.time() - start_time))
 (opt_b , opt_model, p) = gradientDescent(1000,x_valid_vector,y_valid_vector, init_vector, data)
 print(opt_model)
 print(opt_b)
@@ -268,10 +276,10 @@ print(p)
 # 	writer.writerow(opt_model)		
 		
 	
-print("--- %s seconds ---" % (time.time() - start_time))
+# print("--- %s seconds ---" % (time.time() - start_time))
 
 test_data = []
-test_data = loadData(test_data, 'X_train.csv', 0)
+test_data = loadData(test_data, X_testFile, 0)
 test_data = normalData(test_data)
 y_pred = [0] * len(test_data)
 (x_test_vector, yxx) = selectAttr(test_data)
@@ -282,7 +290,7 @@ for i in range(len(x_test_vector)):
 	else:
 		y_pred[i] = 0
 
-with open("resl.csv", "w", newline='') as mFile:
+with open(predictionFile, "w", newline='') as mFile:
 	writer = csv.writer(mFile)
 	writer.writerow(["id","label"])
 	for i in range(0, len(x_test_vector)):
