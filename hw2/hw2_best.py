@@ -227,6 +227,7 @@ def errorChecking(data, opt_model, opt_b, it):
 	return p
 
 
+
 rawDataFile = sys.argv[1]
 testDataFile = sys.argv[2]
 X_trainFile = sys.argv[3]

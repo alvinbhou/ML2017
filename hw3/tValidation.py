@@ -40,15 +40,17 @@ seed = 0
 ratio = 0.1
 loadData(data, x_train, y_train)
 x_train = np.array(x_train)
+x_train = x_train / 255
 
 y_train = keras.utils.to_categorical(y_train,  num_classes = 7)
 # load weights into new model
-model = load_model("c_try.h5")
+model = load_model("CNN_1.h5")
 print("Loaded model from disk")
 
 x_test = []
 loadTestData(x_test)
 x_test = np.array(x_test)
+x_test = x_test / 255
 
 result = model.predict(x_test)
 
@@ -56,10 +58,8 @@ with open('result.csv', "w", newline='') as mFile:
     writer = csv.writer(mFile)
     writer.writerow(["id","label"])
     for i in range(0, len(result)):
-        mFile.write(str(i) + ",")
-        max_value = max(result[i])
-        max_index = row.index(max_value)
-        mFile.write(str(y_pred[i]))
+        mFile.write(str(i) + ",")       
+        mFile.write(str(np.argmax(result[i])))
         mFile.write("\n")
 
 
@@ -68,6 +68,9 @@ print(sum(result[0]))
 print(len(result))
  
 # evaluate loaded model on test data
-# model.compile(loss='categorical_crossentropy', optimizer='rmsprop', metrics=['accuracy'])
-# scores = model.evaluate(x_train, y_train, verbose=0)
-# print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+
+x_valid = x_train[10000:20000]
+y_valid = y_train[10000:20000]
+model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+scores = model.evaluate(x_train, y_train, verbose=0)
+print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
