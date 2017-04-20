@@ -44,7 +44,7 @@ x_train = x_train / 255
 
 y_train = keras.utils.to_categorical(y_train,  num_classes = 7)
 # load weights into new model
-model = load_model("1492630795_84.9925364572model.h5")
+model = load_model('1492676939_89.1491560462model.h5')
 print("Loaded model from disk")
 
 x_test = []

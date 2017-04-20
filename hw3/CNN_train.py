@@ -72,7 +72,7 @@ print("Create Model")
 model = Sequential()
 # input: 100x100 images with 3 channels -> (100, 100, 3) tensors.
 # this applies 32 convolution filters of size 3x3 each.
-model.add(Conv2D(25, (3, 3), input_shape=(48, 48, 1)))
+model.add(Conv2D(25, (3, 3), input_shape=(48, 48, 1), activation='relu'))
 # model.add(Conv2D(32, (3, 3), activation='relu'))
 model.add(MaxPooling2D(pool_size=(2, 2)))
 model.add(Conv2D(50, (3, 3)))
@@ -107,7 +107,7 @@ model.compile(loss = 'categorical_crossentropy',
             optimizer = 'adam',
             metrics = ['accuracy'])
 
-model.fit(x_train, y_train, batch_size = 500,epochs = 30)   
+model.fit(x_train, y_train, batch_size = 500,epochs = 40)   
 
 x_valid = x_train[20000:]
 y_valid = y_train[20000:]
