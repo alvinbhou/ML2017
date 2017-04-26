@@ -1,6 +1,7 @@
 import math, csv, random, copy
 import numpy as np 
 import keras
+import json
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.models import model_from_json
@@ -38,13 +39,17 @@ y_train = []
 
 seed = 0
 ratio = 0.1
-loadData(data, x_train, y_train)
-x_train = np.array(x_train)
-x_train = x_train / 255
+# loadData(data, x_train, y_train)
+# x_train = np.array(x_train)
+# x_train = x_train / 255
 
 y_train = keras.utils.to_categorical(y_train,  num_classes = 7)
 # load weights into new model
-model = load_model('1492676939_89.1491560462model.h5')
+name = '1493143600_61.9777158442model.h5'
+model = load_model('model/' + name)
+model.summary()
+
+
 print("Loaded model from disk")
 
 x_test = []
@@ -54,7 +59,7 @@ x_test = x_test / 255
 
 result = model.predict(x_test)
 
-with open('result.csv', "w", newline='') as mFile:
+with open(name + 'result.csv', "w", newline='') as mFile:
     writer = csv.writer(mFile)
     writer.writerow(["id","label"])
     for i in range(0, len(result)):
@@ -69,8 +74,8 @@ print(len(result))
  
 # evaluate loaded model on test data
 
-x_valid = x_train[10000:20000]
-y_valid = y_train[10000:20000]
-model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
-scores = model.evaluate(x_train, y_train, verbose=0)
-print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
+# x_valid = x_train[10000:20000]
+# y_valid = y_train[10000:20000]
+# model.compile(loss='categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
+# scores = model.evaluate(x_train, y_train, verbose=0)
+# print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
