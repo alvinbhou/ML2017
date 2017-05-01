@@ -43,9 +43,9 @@ ratio = 0.1
 # x_train = np.array(x_train)
 # x_train = x_train / 255
 
-y_train = keras.utils.to_categorical(y_train,  num_classes = 7)
+# y_train = keras.utils.to_categorical(y_train,  num_classes = 7)
 # load weights into new model
-name = '1493143600_61.9777158442model.h5'
+name = '1493568655_63.6680208903model.h5'
 model = load_model('model/' + name)
 model.summary()
 
@@ -68,9 +68,7 @@ with open(name + 'result.csv', "w", newline='') as mFile:
         mFile.write("\n")
 
 
-print(result[0])
-print(sum(result[0]))
-print(len(result))
+
  
 # evaluate loaded model on test data
 

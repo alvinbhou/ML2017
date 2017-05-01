@@ -22,7 +22,7 @@ def loadData(data):
             continue        
         y = int(row[0])
         x = np.array(row[1].split(" "))
-        x = np.array(list(map(float, x))).reshape((48,48,1))
+        x = np.array(list(map(float, x))).reshape(2304)
 
         X.append(x)
         Y.append(y)
@@ -59,29 +59,29 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
     model = Sequential()
     # input: 100x100 images with 3 channels -> (100, 100, 3) tensors.
     # this applies 32 convolution filters of size 3x3 each.
-    model.add(Conv2D(32, (3, 3), input_shape=(48, 48, 1), activation='relu'))
-    # model.add(Conv2D(32, (3, 3), activation='relu'))
+    # model.add(Conv2D(32, (3, 3), input_shape=(48, 48, 1), activation='relu'))
+    # # model.add(Conv2D(32, (3, 3), activation='relu'))
     
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Conv2D(64, (3, 3), activation='relu'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.2))
-    model.add(Conv2D(128, (3, 3), activation='relu', padding = 'same'))
-    model.add(Dropout(0.2))
-    model.add(Conv2D(128, (3, 3), activation='relu', padding = 'same'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.3))
-    model.add(Conv2D(256, (3, 3), activation='relu', padding = 'same'))
-    model.add(Dropout(0.2))
-    model.add(Conv2D(256, (3, 3), activation='relu', padding = 'same'))
-    model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.3))
+    # model.add(MaxPooling2D(pool_size=(2, 2)))
+    # model.add(Conv2D(64, (3, 3), activation='relu'))
+    # model.add(MaxPooling2D(pool_size=(2, 2)))
+    # model.add(Dropout(0.2))
+    # model.add(Conv2D(128, (2, 2), activation='relu'))
+    # model.add(Dropout(0.2))
+    # model.add(Conv2D(128, (2, 2), activation='relu'))
+    # model.add(MaxPooling2D(pool_size=(2, 2)))
+    # model.add(Dropout(0.3))
+    # model.add(Conv2D(256, (3, 3), activation='relu', padding = 'same'))
+    # model.add(Dropout(0.2))
+    # model.add(Conv2D(256, (3, 3), activation='relu', padding = 'same'))
+    # model.add(MaxPooling2D(pool_size=(2, 2)))
+    # model.add(Dropout(0.3))
 
-    model.add(Flatten())
-    model.add(Dense(800, activation = 'relu'))
-    # model.add(Dropout(0.25))
-    # model.add(Dense(80, activation = 'relu'))
-    # model.add(Dropout(0.25))
+    # model.add(Flatten())
+    model.add(Dense(200, input_dim= 2304, activation = 'relu'))  
+    model.add(Dropout(0.25))
+    model.add(Dense(500, activation = 'relu'))
+    model.add(Dropout(0.25))
     # model.add(Dense(100, activation = 'relu'))
     # model.add(Dropout(0.2))
     # model.add(Dense(88, activation = 'relu'))
@@ -99,7 +99,7 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
                 metrics = ['accuracy'])
 
     batchSize = 600
-    epoch = 80
+    epoch = 50
     curTime = time.time()
     model.fit(X_train, y_train, batch_size = batchSize,epochs = epoch)   
 
@@ -118,7 +118,7 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
 data = []
 X, Y = loadData(data)
 
-for i in range(0,5):
+for i in range(0,1):
     tsize = 0.06
     rnState = 42
     X_train, X_valid, y_train, y_valid = train_test_split(X, Y, test_size= tsize, random_state=rnState * i)
