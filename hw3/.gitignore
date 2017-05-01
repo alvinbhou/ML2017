@@ -1,1 +1,6 @@
 model/*
+train.csv
+test.csv
+sample.csv
+pic/*
+theano_model/*
