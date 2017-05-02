@@ -41,11 +41,10 @@ def loadData():
     
     
 
-start_time = time.time()
 
 
 
-print("Create Model")
+
 
 def genModelandCompile(X_train, X_valid, y_train, y_valid):
 
@@ -54,10 +53,11 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
     # this applies 32 convolution filters of size 3x3 each.
     model.add(Conv2D(16, (3, 3), input_shape=(48, 48, 1), activation='relu'))
     # model.add(Conv2D(32, (3, 3), activation='relu'))
-    
+      
     model.add(MaxPooling2D(pool_size=(2, 2)))
-    # model.add(Conv2D(32, (3, 3), activation='relu'))
-    # model.add(MaxPooling2D(pool_size=(2, 2)))
+    model.add(Dropout(0.2))
+    model.add(Conv2D(32, (3, 3), activation='relu'))
+    model.add(MaxPooling2D(pool_size=(2, 2)))
     # model.add(Dropout(0.2))   
     # model.add(Conv2D(64, (3, 3), activation='relu'))
     # model.add(MaxPooling2D(pool_size=(2, 2)))
@@ -67,7 +67,7 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
     model.add(Dropout(0.3))
 
     model.add(Flatten())
-    model.add(Dense(40, activation = 'relu'))
+    model.add(Dense(400, activation = 'relu'))
     # model.add(Dropout(0.25))
     # model.add(Dense(80, activation = 'relu'))
     # model.add(Dropout(0.25))
@@ -79,7 +79,7 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
     # model.add(Dropout(0.2))
     model.add(Dense(7, activation = 'softmax'))
     model.summary()
-
+    print("Created Model")
 
 
     print("Start compile")
@@ -109,15 +109,44 @@ def saveModel(model, tsize, rnState, scores):
 badImg = [59,2171,2809,4275,5274,5439,5881,6102, 6458,7172,7496,7527,7629,8423,8737,9026,9500,9679,9797,10423,10657,11244,11286,11295,11846,12352,13988,14279,15144,15835,15838,15894,16540,19238,19632,20712,20817,21817,22198,22927,23596,23894,24053,24441,25909,26383,26860,26897]
 
 
+start_time = time.time()
 X, Y = loadData()
 print("data loaded")
 batchSize = 600
-epoch = 1
+epoch = 10
 
 tsize = 0.06
 rnState = 0
 X_train, X_valid, y_train, y_valid = train_test_split(X, Y, test_size= tsize, random_state=rnState)
+
+X_train_unlabel = X_train[20000:]
+y_train_unlabel = X_train[20000:]
+
+X_train = X_train[0:20000]
+y_train = y_train[0:20000]
+
+#  initial model 
 model, scores = genModelandCompile(X_train, X_valid, y_train, y_valid)
+
+
+
+for step in range(1,7):
+    print("--step--")
+    print(step)
+    y_pred = model.predict(X_train_unlabel[0:1000])  
+    X_train = np.concatenate((X_train, X_train_unlabel[0:1000]), axis=0)
+    y_train = np.concatenate((y_train, y_pred), axis=0)
+
+    X_train_unlabel = X_train_unlabel[1000:]
+    model, scores = genModelandCompile(X_train, X_valid, y_train, y_valid)
+ 
+
+    
+    # X_train = X_train + X_train_unlabel[0: step * 4000]
+    
+    # X_train_unlabel = X_train_unlabel[step * 4000:]
+    # model, scores = genModelandCompile(X_train, X_valid, y_train, y_valid)
+
 
 saveModel(model, tsize, rnState , scores)
 

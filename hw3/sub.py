@@ -45,8 +45,8 @@ ratio = 0.1
 
 # y_train = keras.utils.to_categorical(y_train,  num_classes = 7)
 # load weights into new model
-name = '1493568655_63.6680208903model.h5'
-model = load_model('model/' + name)
+name = '1493663878_64.7674418882model.h5'
+model = load_model('tensorflow_model/' + name)
 model.summary()
 
 
