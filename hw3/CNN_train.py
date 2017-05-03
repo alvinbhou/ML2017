@@ -36,33 +36,14 @@ def loadData(data):
     Y = keras.utils.to_categorical(Y,  num_classes = 7)
     return (X, Y)    
     
-    pass
-
-
-# def sampleData(seed, ratio, x_train, y_train):
-#     dataLen = len(x_train)
-#     d = copy.copy(data)
-#     random.seed(seed)
-#     random.shuffle(d)
-#     train_data = d[:math.floor(dataLen*ratio)]
-#     valid_data = d[math.floor(dataLen*ratio):]
-#     return( (train_data, valid_data))
-
-
-    
-    
-    
+  
 
 start_time = time.time()
 
-
-
-print("Create Model")
-
 def genModelandCompile(X_train, X_valid, y_train, y_valid):
+    print("Create Model")
 
-    model = Sequential()
-    # input: 100x100 images with 3 channels -> (100, 100, 3) tensors.
+    model = Sequential() 
     # this applies 32 convolution filters of size 3x3 each.
     model.add(Conv2D(32, (3, 3), input_shape=(48, 48, 1), activation='relu'))
     model.add(Dropout(0.2))
@@ -74,40 +55,33 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
     model.add(Dropout(0.2))
     model.add(Conv2D(64, (3, 3), activation='relu', padding = 'same'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.3))
     model.add(Conv2D(128, (3, 3), activation='relu', padding = 'same'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.3))
     model.add(Conv2D(128, (3, 3), activation='relu', padding = 'same'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.3))
     model.add(Conv2D(256, (3, 3), activation='relu', padding = 'same'))
-    model.add(Dropout(0.2))
+    model.add(Dropout(0.3))
     model.add(Conv2D(256, (3, 3), activation='relu', padding = 'same'))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Dropout(0.3))
 
     model.add(Flatten())
-    model.add(Dense(800, activation = 'relu'))
-    # model.add(Dropout(0.25))
-    # model.add(Dense(80, activation = 'relu'))
-    # model.add(Dropout(0.25))
-    # model.add(Dense(100, activation = 'relu'))
-    # model.add(Dropout(0.2))
-    # model.add(Dense(88, activation = 'relu'))
-    # model.add(Dropout(0.2))
-    # model.add(Dense(96, activation = 'relu'))
-    # model.add(Dropout(0.2))
+    model.add(Dropout(0.45))
+    model.add(Dense(1024, activation = 'relu'))
+    model.add(Dropout(0.45))    
     model.add(Dense(7, activation = 'softmax'))
     model.summary()
-
+    opt = keras.optimizers.adam(lr = 0.00025)
 
 
     print("Start compile")
     model.compile(loss = 'categorical_crossentropy',
-                optimizer = 'adam',
+                optimizer = opt,
                 metrics = ['accuracy'])
 
-    batchSize = 500
+    batchSize = 300
     epoch = 150
     curTime = time.time()
     model.fit(X_train, y_train, batch_size = batchSize,epochs = epoch)   
@@ -118,7 +92,7 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
 
     mode = 'tensorflow_'
 
-    model.save(mode + 'model/' + str(int(curTime))+ '_' + str(scores[1]*100)+ 'model.h5')
+    model.save(mode + 'model/' + str(inXDt(curTime))+ '_' + str(scores[1]*100)+ 'model.h5')
     json = model.to_json()
     with open(mode + 'model/' + str(int(curTime))+ 'model.json', 'w') as json_file:
         json_file.write(str(tsize) + ' ' + str(rnState) + '\n')
@@ -130,11 +104,12 @@ badImg = [59,2171,2809,4275,5274,5439,5881,6102, 6458,7172,7496,7527,7629,8423,8
 data = []
 X, Y = loadData(data)
 
-for i in range(0,1):
-    tsize = 0.03
-    rnState = 42 * i
-    X_train, X_valid, y_train, y_valid = train_test_split(X, Y, test_size= tsize, random_state=rnState)
-    genModelandCompile(X_train, X_valid, y_train, y_valid)
+
+tsize = 0.03
+rnState = 0
+X_train, X_valid, y_train, y_valid = train_test_split(X, Y, test_size= tsize, random_state=rnState)
+
+genModelandCompile(X_train, X_valid, y_train, y_valid)
 
 
 print("--- %s seconds ---" % (time.time() - start_time))    
