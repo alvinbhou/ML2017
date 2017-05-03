@@ -65,8 +65,10 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
     # input: 100x100 images with 3 channels -> (100, 100, 3) tensors.
     # this applies 32 convolution filters of size 3x3 each.
     model.add(Conv2D(32, (3, 3), input_shape=(48, 48, 1), activation='relu'))
+    model.add(Dropout(0.2))
+    model.add(Conv2D(32, (3, 3), activation='relu'))
     # model.add(Conv2D(32, (3, 3), activation='relu'))
-    
+    model.add(Dropout(0.3))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Conv2D(64, (3, 3), activation='relu', padding = 'same'))
     model.add(Dropout(0.2))
@@ -105,8 +107,8 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
                 optimizer = 'adam',
                 metrics = ['accuracy'])
 
-    batchSize = 600
-    epoch = 80
+    batchSize = 500
+    epoch = 150
     curTime = time.time()
     model.fit(X_train, y_train, batch_size = batchSize,epochs = epoch)   
 
@@ -128,10 +130,10 @@ badImg = [59,2171,2809,4275,5274,5439,5881,6102, 6458,7172,7496,7527,7629,8423,8
 data = []
 X, Y = loadData(data)
 
-for i in range(0,5):
-    tsize = 0.06
-    rnState = 42
-    X_train, X_valid, y_train, y_valid = train_test_split(X, Y, test_size= tsize, random_state=rnState * i)
+for i in range(0,1):
+    tsize = 0.03
+    rnState = 42 * i
+    X_train, X_valid, y_train, y_valid = train_test_split(X, Y, test_size= tsize, random_state=rnState)
     genModelandCompile(X_train, X_valid, y_train, y_valid)
 
 
