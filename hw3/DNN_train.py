@@ -78,9 +78,9 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
     # model.add(Dropout(0.3))
 
     # model.add(Flatten())
-    model.add(Dense(200, input_dim= 2304, activation = 'relu'))  
-    model.add(Dropout(0.25))
-    model.add(Dense(500, activation = 'relu'))
+    model.add(Dense(800, input_dim= 2304, activation = 'relu'))  
+    model.add(Dropout(0.45))
+    model.add(Dense(1600, activation = 'relu'))
     model.add(Dropout(0.25))
     # model.add(Dense(100, activation = 'relu'))
     # model.add(Dropout(0.2))
@@ -107,9 +107,9 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
     scores = model.evaluate(X_valid, y_valid, verbose=0)
     print("%s: %.2f%%" % (model.metrics_names[1], scores[1]*100))
 
-    model.save('model/' + str(int(curTime))+ '_' + str(scores[1]*100)+ 'model.h5')
+    model.save('DNN_model/' + str(int(curTime))+ '_' + str(scores[1]*100)+ 'model.h5')
     json = model.to_json()
-    with open('model/' + str(int(curTime))+ 'model.json', 'w') as json_file:
+    with open('DNN_model/' + str(int(curTime))+ 'model.json', 'w') as json_file:
         json_file.write(str(tsize) + ' ' + str(rnState) + '\n')
         json_file.write("batchsize = " + str(batchSize) + "  epoch = " + str(epoch) + "\n")
         json_file.write(json)
