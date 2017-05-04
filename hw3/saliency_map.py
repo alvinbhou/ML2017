@@ -12,6 +12,7 @@ from keras.applications.imagenet_utils import preprocess_input
 from vis.utils import utils
 from vis.visualization import visualize_saliency
 
+
 def loadData():
     X = []
     Y = []
@@ -43,7 +44,7 @@ private_pixels = loadData()
 input_img = emotion_classifier.input
 img_ids = []
 
-for i in range(1000,1020):
+for i in range(1,20):
 	img_ids.append(i)
 
 for idx in img_ids:

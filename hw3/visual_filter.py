@@ -12,10 +12,9 @@ from keras import applications
 from keras import backend as K
 from scipy.misc import imsave
 
-# build the VGG16 network
 
-name = '1493755856_62.7906976744model.h5'
-model = load_model('tensorflow_model/' + name)
+name = '1493828072_65.0000000832model.h5'
+model = load_model('theano_model/' + name)
 model.summary()
 
 # get the symbolic outputs of each "key" layer (we gave them unique names).
@@ -41,10 +40,11 @@ for i in range(nb_filter):
     iterate = K.function([input_img], [loss, grads])
     input_img_data = np.random.random((1, 48, 48, 1)) # random noise
 
-    # run gradient ascent for 20 steps
+    # run gradient ascent for 1000 steps
     for step in range(1000):
         loss_value, grads_value = iterate([input_img_data])
         input_img_data += grads_value 
+
     img = input_img_data[0]
     img = img.reshape(48,48)
     
@@ -52,10 +52,10 @@ for i in range(nb_filter):
     ax.imshow(img, cmap='BuGn')
     plt.xticks(np.array([]))
     plt.yticks(np.array([]))
-    # plt.xlabel('{:.3f}'.format(filter_imgs[it][i][1]))
+    plt.xlabel(str(i))
     plt.tight_layout()
 
 fig.show()
-fig.suptitle('such wow')
-fig.savefig('tmp.png') #將圖片儲存至disk
+fig.suptitle('Filters of layer conv2d_1')
+fig.savefig('visual_filter.png') #將圖片儲存至disk
 

@@ -12,8 +12,6 @@ import time
 import os
 # os.environ["THEANO_FLAGS"] = "device=gpu0"
 
-
-
 def loadData(data):
     X = []
     Y = []
@@ -34,21 +32,18 @@ def loadData(data):
     X = np.array(X)
     X = X / 255 
     Y = keras.utils.to_categorical(Y,  num_classes = 7)
-    return (X, Y)    
-    
-  
+    return (X, Y)      
 
-start_time = time.time()
+
 
 def genModelandCompile(X_train, X_valid, y_train, y_valid):
-    print("Create Model")
+    # print("Create Model")
 
     model = Sequential() 
     # this applies 32 convolution filters of size 3x3 each.
     model.add(Conv2D(32, (3, 3), input_shape=(48, 48, 1), activation='relu'))
     model.add(Dropout(0.2))
     model.add(Conv2D(32, (3, 3), activation='relu'))
-    # model.add(Conv2D(32, (3, 3), activation='relu'))
     model.add(Dropout(0.3))
     model.add(MaxPooling2D(pool_size=(2, 2)))
     model.add(Conv2D(64, (3, 3), activation='relu', padding = 'same'))
@@ -76,7 +71,7 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
     opt = keras.optimizers.adam(lr = 0.00025)
 
 
-    print("Start compile")
+    # print("Start compile")
     model.compile(loss = 'categorical_crossentropy',
                 optimizer = opt,
                 metrics = ['accuracy'])
@@ -92,9 +87,9 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
 
     mode = 'tensorflow_'
 
-    model.save(mode + 'model/' + str(inXDt(curTime))+ '_' + str(scores[1]*100)+ 'model.h5')
+    model.save(str(inXDt(curTime))+ '_' + str(scores[1]*100)+ 'model.h5')
     json = model.to_json()
-    with open(mode + 'model/' + str(int(curTime))+ 'model.json', 'w') as json_file:
+    with open(str(int(curTime))+ 'model.json', 'w') as json_file:
         json_file.write(str(tsize) + ' ' + str(rnState) + '\n')
         json_file.write("batchsize = " + str(batchSize) + "  epoch = " + str(epoch) + "\n")
         json_file.write(json)
@@ -104,7 +99,7 @@ badImg = [59,2171,2809,4275,5274,5439,5881,6102, 6458,7172,7496,7527,7629,8423,8
 data = []
 X, Y = loadData(data)
 
-
+start_time = time.time()
 tsize = 0.03
 rnState = 0
 X_train, X_valid, y_train, y_valid = train_test_split(X, Y, test_size= tsize, random_state=rnState)
@@ -112,4 +107,4 @@ X_train, X_valid, y_train, y_valid = train_test_split(X, Y, test_size= tsize, ra
 genModelandCompile(X_train, X_valid, y_train, y_valid)
 
 
-print("--- %s seconds ---" % (time.time() - start_time))    
+# print("--- %s seconds ---" % (time.time() - start_time))    
