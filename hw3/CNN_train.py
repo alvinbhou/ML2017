@@ -87,7 +87,7 @@ def genModelandCompile(X_train, X_valid, y_train, y_valid):
 
     mode = 'tensorflow_'
 
-    model.save(str(inXDt(curTime))+ '_' + str(scores[1]*100)+ 'model.h5')
+    model.save(str(int(curTime))+ '_' + str(scores[1]*100)+ 'model.h5')
     json = model.to_json()
     with open(str(int(curTime))+ 'model.json', 'w') as json_file:
         json_file.write(str(tsize) + ' ' + str(rnState) + '\n')
