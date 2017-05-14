@@ -7,8 +7,13 @@ from adjustText import adjust_text
 
 start_time = time.time()
 
+# deafule parameters
+hs  = 1
+min_count = 5
+cbow = 1
+
 modelPath ='hp/all.bin'
-word2vec.word2vec('hp/all.txt', modelPath, size=100, verbose=True)
+word2vec.word2vec('hp/all.txt', modelPath, size= 100, verbose=True, alpha = 0.05)
 
 model = word2vec.load(modelPath)
  
@@ -27,7 +32,7 @@ for vocab in model.vocab:
 
 # Get the number to plot
 
-PLOT_NUM = 1000
+PLOT_NUM = 450
     
 vecs = np.array(vecs)[:PLOT_NUM]
 vocabs = vocabs[:PLOT_NUM]
@@ -59,7 +64,7 @@ count = 0
 for i, label in enumerate(vocabs):
     print(i, label)
     pos = nltk.pos_tag([label])
-    if (label[0].isupper() and len(label) > 1 and pos[0][1] in use_tags
+    if (len(label) > 1 and pos[0][1] in use_tags
             and all(c not in label for c in puncts)):
         x, y = reduced[i, :]
         texts.append(plt.text(x, y, label))
@@ -69,7 +74,7 @@ for i, label in enumerate(vocabs):
 
 adjust_text(texts, arrowprops=dict(arrowstyle='-', color='k', lw=0.35))
 
-plt.savefig( 'hp/' + str(time.time())+ 'hp' + str(PLOT_NUM) + '.png', dpi=600)
+plt.savefig( 'hp/' + str(time.time())+ ' ' + str(PLOT_NUM) + 'size= 100, verbose=True, alpha = 0.05' + '.png', dpi=600)
 
 print(count)
 print("--- %s seconds ---" % (time.time() - start_time))  
