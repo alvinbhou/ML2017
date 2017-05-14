@@ -35,7 +35,8 @@ pred_y = svr.predict(test_X)
 with open(ans_file, 'w') as f:
     print('SetId,LogDim', file=f)
     for i, d in enumerate(pred_y):
-        x = np.log(d)
-        if(np.abs(round(x) - x) <= 0.2):
-            x = round(x)    
+        x = d
+        if(np.abs((np.round(d) - d)) <= 0.2):
+            x = np.round(d)
+        x = np.log(x) 
         print(f'{i},{x}', file=f)

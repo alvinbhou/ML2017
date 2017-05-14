@@ -18,6 +18,8 @@ def loadData():
         image = np.zeros((480,150))
         for j in range(480):
             image[j] = im[j][100:250]
+        image = image.flatten()
+        image = image[20000:50000]
      
         data.append(image)                 
 
@@ -30,12 +32,15 @@ print(data.shape)
 
 svr = joblib.load('1494690169.1373851model.pkl') 
 
+print('start predict')
 # predict
 
 test_X = []
 
 
 vs = get_eigenvalues(data)
+print(vs)
+
 test_X.append(vs)
 
 test_X = np.array(test_X)
