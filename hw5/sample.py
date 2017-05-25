@@ -11,6 +11,7 @@ from keras.layers.embeddings import Embedding
 from keras.optimizers import Adam
 from keras.callbacks import EarlyStopping, ModelCheckpoint
 import time
+import pickle
 
 
 train_path = sys.argv[1]
@@ -24,6 +25,7 @@ split_ratio = 0.05
 embedding_dim = 200
 nb_epoch = 1000
 batch_size = 200
+
 
 
 ################
@@ -137,6 +139,8 @@ def main():
     tokenizer = Tokenizer()
     tokenizer.fit_on_texts(all_corpus)
     word_index = tokenizer.word_index
+    tokenizerPath = 'data/' + str(start_time) +  'tk.p'
+    pickle.dump(tokenizer, open( tokenizerPath, "wb" ))
 
     ### convert word sequences to index sequence
     print ('Convert to index sequences.')
@@ -160,9 +164,13 @@ def main():
     embedding_dict = get_embedding_dict('data/glove.6B.%dd.txt'%embedding_dim)
     print ('Found %s word vectors.' % len(embedding_dict))
     num_words = len(word_index) + 1
+    print(num_words)
     print ('Create embedding matrix.')
     embedding_matrix = get_embedding_matrix(word_index,embedding_dict,num_words,embedding_dim)
+    embeddingPath = 'data/' + str(start_time) +  'em.p'
+    pickle.dump(embedding_matrix, open( embeddingPath, "wb" ))
 
+    
     ### build model
     print ('Building model.')
     model = Sequential()
@@ -171,9 +179,9 @@ def main():
                         weights=[embedding_matrix],
                         input_length=max_article_length,
                         trainable=False))
-    model.add(GRU(360,activation='tanh',dropout=0.3))
+    model.add(GRU(360,activation='tanh',dropout=0.4))
     model.add(Dense(720,activation='relu'))
-    model.add(Dropout(0.3))
+    model.add(Dropout(0.4))
     model.add(Dense(360,activation='relu'))
     model.add(Dropout(0.4))
     model.add(Dense(180,activation='relu'))
@@ -181,13 +189,13 @@ def main():
     model.add(Dense(38,activation='sigmoid'))
     model.summary()
 
-    adam = Adam(lr=0.0015,decay=1e-6,clipvalue=0.5)
+    adam = Adam(lr=0.002,decay=1e-6,clipvalue=0.5)
     model.compile(loss='categorical_crossentropy',
                   optimizer=adam,
                   metrics=[f1_score])
    
     earlystopping = EarlyStopping(monitor='val_f1_score', patience = 20, verbose=1, mode='max')
-    checkpoint = ModelCheckpoint(filepath= str(start_time)+ 'best.hdf5',
+    checkpoint = ModelCheckpoint(filepath= str(start_time)+ 'best.h5',
                                  verbose=1,
                                  save_best_only=True,
                                  save_weights_only=True,
@@ -210,4 +218,5 @@ def main():
             print ('\"%d\",\"%s\"'%(index,labels_original),file=output)
 
 if __name__=='__main__':
-    main()
+    for i in range(0,20):
+        main()
