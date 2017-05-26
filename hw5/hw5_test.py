@@ -13,6 +13,53 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.models import load_model
 
 
+TAGLIST = ["SCIENCE-FICTION",
+"SPECULATIVE-FICTION",
+"FICTION",
+"NOVEL",
+"FANTASY",
+"CHILDREN'S-LITERATURE",
+"SATIRE",
+"HUMOUR",
+"HISTORICAL-FICTION",
+"HISTORY",
+"MYSTERY",
+"SUSPENSE",
+"ADVENTURE-NOVEL",
+"SPY-FICTION",
+"AUTOBIOGRAPHY",
+"THRILLER",
+"HORROR",
+"ROMANCE-NOVEL",
+"COMEDY",
+"NOVELLA",
+"WAR-NOVEL",
+"DYSTOPIA",
+"COMIC-NOVEL",
+"DETECTIVE-FICTION",
+"HISTORICAL-NOVEL",
+"BIOGRAPHY",
+"MEMOIR",
+"NON-FICTION",
+"CRIME-FICTION",
+"AUTOBIOGRAPHICAL-NOVEL",
+"ALTERNATE-HISTORY",
+"TECHNO-THRILLER",
+"UTOPIAN-AND-DYSTOPIAN-FICTION",
+"YOUNG-ADULT-LITERATURE",
+"SHORT-STORY",
+"GOTHIC-FICTION",
+"APOCALYPTIC-AND-POST-APOCALYPTIC-FICTION",
+"HIGH-FANTASY"]
+
+
+
+
+
+
+
+
+
 #####################
 ###   parameter   ###
 #####################
@@ -22,7 +69,7 @@ nb_epoch = 1000
 batch_size = 200
 num_words = 51867
 
-train_path = 'train_data.csv'
+# train_path = 'train_data.csv'
 test_path = sys.argv[1]
 output_path = sys.argv[2]
 
@@ -102,9 +149,9 @@ def f1_score(y_true,y_pred):
 
 
 ### read training and testing data
-(Y_data,X_data,tag_list) = read_data(train_path,True)
+# (Y_data,X_data,tag_list) = read_data(train_path,True)
 (_, X_test,_) = read_data(test_path,False)
-all_corpus = X_data + X_test
+# all_corpus = X_data + X_test
 # print ('Find %d articles.' %(len(all_corpus)))
 
 ### tokenizer for all data
@@ -117,13 +164,13 @@ num_words = len(word_index) + 1
 
 ### convert word sequences to index sequence
 # print ('Convert to index sequences.')
-train_sequences = tokenizer.texts_to_sequences(X_data)
+# train_sequences = tokenizer.texts_to_sequences(X_data)
 test_sequences = tokenizer.texts_to_sequences(X_test)
 
 ### padding to equal length
 # print ('Padding sequences.')
-train_sequences = pad_sequences(train_sequences)
-max_article_length = train_sequences.shape[1]
+# train_sequences = pad_sequences(train_sequences)
+max_article_length = 306
 test_sequences = pad_sequences(test_sequences,maxlen=max_article_length)
 
 # print ('Get embedding dict from glove.')
@@ -167,6 +214,6 @@ with open(output_path,'w') as output:
     print ('\"id\",\"tags\"',file=output)
     Y_pred_thresh = (Y_pred > thresh).astype('int')
     for index,labels in enumerate(Y_pred_thresh):
-        labels = [tag_list[i] for i,value in enumerate(labels) if value==1 ]
+        labels = [TAGLIST[i] for i,value in enumerate(labels) if value==1 ]
         labels_original = ' '.join(labels)
         print ('\"%d\",\"%s\"'%(index,labels_original),file=output)
