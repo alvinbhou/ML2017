@@ -13,8 +13,6 @@ from keras.callbacks import EarlyStopping, ModelCheckpoint
 from keras.models import load_model
 
 
-import time, pickle
-
 #####################
 ###   parameter   ###
 #####################
@@ -24,13 +22,13 @@ nb_epoch = 1000
 batch_size = 200
 num_words = 51867
 
-train_path = sys.argv[1]
-test_path = sys.argv[2]
-output_path = sys.argv[3]
+train_path = 'train_data.csv'
+test_path = sys.argv[1]
+output_path = sys.argv[2]
 
 
 def read_data(path,training):
-    print ('Reading data from ',path)
+    # print ('Reading data from ',path)
     with open(path,'r') as f:
     
         tags = []
@@ -102,12 +100,12 @@ def f1_score(y_true,y_pred):
     recall=tp/(K.sum(y_true))
     return 2*((precision*recall)/(precision+recall))
 
-start_time = int(time.time())
+
 ### read training and testing data
 (Y_data,X_data,tag_list) = read_data(train_path,True)
 (_, X_test,_) = read_data(test_path,False)
 all_corpus = X_data + X_test
-print ('Find %d articles.' %(len(all_corpus)))
+# print ('Find %d articles.' %(len(all_corpus)))
 
 ### tokenizer for all data
 # tokenizer = Tokenizer()
@@ -118,17 +116,17 @@ word_index = tokenizer.word_index
 num_words = len(word_index) + 1
 
 ### convert word sequences to index sequence
-print ('Convert to index sequences.')
+# print ('Convert to index sequences.')
 train_sequences = tokenizer.texts_to_sequences(X_data)
 test_sequences = tokenizer.texts_to_sequences(X_test)
 
 ### padding to equal length
-print ('Padding sequences.')
+# print ('Padding sequences.')
 train_sequences = pad_sequences(train_sequences)
 max_article_length = train_sequences.shape[1]
 test_sequences = pad_sequences(test_sequences,maxlen=max_article_length)
 
-print ('Get embedding dict from glove.')
+# print ('Get embedding dict from glove.')
 # embedding_dict = get_embedding_dict('data/glove.6B.%dd.txt'%embedding_dim)
 # print ('Found %s word vectors.' % len(embedding_dict))
 
@@ -153,7 +151,7 @@ model.add(Dropout(0.4))
 model.add(Dense(180,activation='relu'))
 model.add(Dropout(0.4))
 model.add(Dense(38,activation='sigmoid'))
-model.summary()
+# model.summary()
 
 # adam = Adam(lr=0.002,decay=1e-6,clipvalue=0.5)
 # model.compile(loss='categorical_crossentropy',

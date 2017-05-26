@@ -169,6 +169,7 @@ def main():
     embedding_matrix = get_embedding_matrix(word_index,embedding_dict,num_words,embedding_dim)
     embeddingPath = 'data/' + str(start_time) +  'em.p'
     pickle.dump(embedding_matrix, open( embeddingPath, "wb" ))
+    print(embedding_matrix.shape)
 
     
     ### build model
@@ -186,13 +187,14 @@ def main():
     model.add(Dropout(0.4))
     model.add(Dense(180,activation='relu'))
     model.add(Dropout(0.4))
-    model.add(Dense(38,activation='sigmoid'))
+    model.add(Dense(38,activation='softmax'))
     model.summary()
 
     adam = Adam(lr=0.002,decay=1e-6,clipvalue=0.5)
     model.compile(loss='categorical_crossentropy',
                   optimizer=adam,
                   metrics=[f1_score])
+                  
    
     earlystopping = EarlyStopping(monitor='val_f1_score', patience = 20, verbose=1, mode='max')
     checkpoint = ModelCheckpoint(filepath= str(start_time)+ 'best.h5',
