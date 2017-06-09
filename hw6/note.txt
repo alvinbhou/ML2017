@@ -1,0 +1,28 @@
+0.0005 64 dimen with random_norm
+
+0.510774084512
+0.720002029711
+
+0.0003 64 dimen 175 with 
+0.714410790961
+
+
+
+0.0005 64 dimen with no random_norm 75 epoch
+0.73468922262
+
+0.0003 32 dimen with with random_norm 175 epoch
+0.738012633125
+
+0.0003 84 dimen with with random_norm 175 epoch
+0.719601432178
+
+0.8530274680757024
+
+no movie bias
+0.71492147052
+
+no user bias
+0.757419093437
+
+

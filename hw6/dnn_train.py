@@ -103,17 +103,17 @@ y = np.array(ratings.Rating)
 # The embedding layer is normally used for sequences (think, sequences of words)
 # so we need to flatten it out.
 # The dropout layer is also important in preventing overfitting
+# movie input and embedding
 movie_input = keras.layers.Input(shape=[1])
 movie_vec = keras.layers.Flatten()(keras.layers.Embedding(n_movies + 1, 48)(movie_input))
 movie_vec = keras.layers.Dropout(0.4)(movie_vec)
 
-# Same thing for the users
+# users input and embedding
 user_input = keras.layers.Input(shape=[1])
 user_vec = keras.layers.Flatten()(keras.layers.Embedding(n_users + 1,48)(user_input))
 user_vec = keras.layers.Dropout(0.4)(user_vec)
 
-# Next, we join them all together and put them
-# through a pretty standard deep learning architecture
+# dnn architecture
 input_vecs = keras.layers.concatenate([movie_vec, user_vec])
 nn = keras.layers.Dropout(0.5)(keras.layers.Dense(1024, activation='relu')(input_vecs))
 nn = keras.layers.normalization.BatchNormalization()(nn)

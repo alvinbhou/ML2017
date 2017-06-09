@@ -6,7 +6,7 @@ import matplotlib
 import zipfile
 import requests
 import numpy as np
-
+from keras.callbacks import EarlyStopping, ModelCheckpoint
 from sklearn import dummy, metrics, cross_validation, ensemble
 import keras.optimizers as optimizers
 import keras.models as kmodels
@@ -73,7 +73,6 @@ print(trainUserID.shape)
 print(testUserID.shape)
 
 
-
 # Also, make vectors of all the movie ids and user ids. These are
 # pandas categorical data, so they range from 1 to n_movies and 1 to n_users, respectively.
 # movieid = ratings.MovieID.cat.codes.values
@@ -104,28 +103,28 @@ y = np.array(ratings.Rating)
 # so we need to flatten it out.
 # The dropout layer is also important in preventing overfitting
 movie_input = keras.layers.Input(shape=[1])
-movie_vec = keras.layers.Flatten()(keras.layers.Embedding(n_movies + 1, 64, embeddings_initializer='random_normal')(movie_input))
+movie_vec = keras.layers.Flatten()(keras.layers.Embedding(n_movies + 1, 128)(movie_input))
 movie_vec = keras.layers.Dropout(0.5)(movie_vec)
 
 # Same thing for the users
 user_input = keras.layers.Input(shape=[1])
-user_vec = keras.layers.Flatten()(keras.layers.Embedding(n_users + 1,64, embeddings_initializer='random_normal')(user_input))
+user_vec = keras.layers.Flatten()(keras.layers.Embedding(n_users + 1,128)(user_input))
 user_vec = keras.layers.Dropout(0.5)(user_vec)
 
 # Then we do the bias vector
-movie_bias = keras.layers.Embedding(n_movies + 1, 1, embeddings_initializer = 'zeros')(movie_input)
+movie_bias = keras.layers.Embedding(n_movies + 1, 1, embeddings_initializer = 'random_normal')(movie_input)
 movie_bias = keras.layers.Flatten()(movie_bias)
-user_bias = keras.layers.Embedding(n_users +1 , 1, embeddings_initializer = 'zeros')(user_input)
+user_bias = keras.layers.Embedding(n_users +1 , 1, embeddings_initializer = 'random_normal')(user_input)
 user_bias = keras.layers.Flatten()(user_bias)
 
 
 # Next, we join them all together and put them
 # through a pretty standard deep learning architecture
 r_hat = keras.layers.Dot(axes = 1)([ movie_vec, user_vec])
-r_hat = keras.layers.Add()([r_hat, movie_bias, user_bias ])
+# r_hat = keras.layers.Add()(r_hat)
 
 model = kmodels.Model([movie_input, user_input], r_hat)
-opt = optimizers.adam(lr = 0.0005)
+opt = optimizers.adam(lr = 0.0003)
 model.compile(opt, loss = 'mean_squared_error')
 model.summary()
 
@@ -136,10 +135,18 @@ a_movieid, b_movieid, a_userid, b_userid, a_y, b_y = cross_validation.train_test
 # training at all.
 # metrics.mean_squared_error(np.argmax(b_y, 1)+1, np.argmax(model.predict([b_movieid, b_userid]), 1)+1)
 
+
+
+# earlystopping = EarlyStopping(monitor='val_loss', patience = 20, verbose=1, mode='min')
+# checkpoint = ModelCheckpoint(filepath= str(start_time)+ 'modelfbest.h5',
+#                             verbose=1,
+#                             save_best_only=True,                            
+#                             monitor='val_loss',
+#                             mode='min') 
 history = model.fit([a_movieid, a_userid], a_y, 
                         batch_size = 400,
-                        epochs = 100, 
-                        validation_data=([b_movieid, b_userid], b_y))
+                        epochs = 150,                         
+                        validation_data=([b_movieid, b_userid], b_y))        
     # plot(history.history['loss'])
     # plot(history.history['val_loss'])
 
