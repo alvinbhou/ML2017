@@ -1,0 +1,7 @@
+submissions/*
+data/*
+.vscode/*
+.ipynb_checkpoints/*
+bin/*
+lib/*
+include/*
